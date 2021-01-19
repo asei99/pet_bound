@@ -31,6 +31,7 @@ class _AuthFormState extends State<AuthForm> {
   var userEmail = '';
   var userName = '';
   var userPassword = '';
+  TextEditingController passwordText = TextEditingController();
 
   void trySubmit() {
     final isValid = _formKey.currentState.validate();
@@ -46,7 +47,7 @@ class _AuthFormState extends State<AuthForm> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return new Scaffold(
+    return Scaffold(
       // backgroundColor: Color.fromRGBO(235, 171, 171, 1),
       backgroundColor: Color.fromRGBO(255, 239, 226, 1),
       body: SingleChildScrollView(
@@ -248,6 +249,7 @@ class _AuthFormState extends State<AuthForm> {
                                     ),
                                     labelText: 'Password',
                                   ),
+                                  controller: passwordText,
                                   onSaved: (value) {
                                     userPassword = value;
                                   },
@@ -261,9 +263,12 @@ class _AuthFormState extends State<AuthForm> {
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return 'password is empty';
+                                      } else if (value != passwordText.text) {
+                                        return 'password didnt match';
                                       }
                                       return null;
                                     },
+
                                     autofocus: false,
                                     // style: TextStyle(color: Colors.pink),
                                     decoration: InputDecoration(
@@ -350,6 +355,7 @@ class _AuthFormState extends State<AuthForm> {
                                     onTap: () {
                                       setState(() {
                                         isLogin = !isLogin;
+                                        passwordText.clear();
                                       });
                                     },
                                     child: Text(
@@ -376,6 +382,7 @@ class _AuthFormState extends State<AuthForm> {
                                     onTap: () {
                                       setState(() {
                                         isLogin = !isLogin;
+                                        passwordText.clear();
                                       });
                                     },
                                     child: Text(

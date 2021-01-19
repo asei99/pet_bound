@@ -1,7 +1,6 @@
 import 'package:Pet_Bound/Widget/pet_widget.dart';
 import 'package:Pet_Bound/socialmedia/edit_pet.dart';
 import 'package:Pet_Bound/socialmedia/home_page.dart';
-import 'package:Pet_Bound/socialmedia/pets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
@@ -15,7 +14,7 @@ class Detailpet extends StatefulWidget {
 }
 
 void back(BuildContext ctx) {
-  Navigator.pop(ctx);
+  Navigator.of(ctx).pop();
 }
 
 class _DetailpetState extends State<Detailpet> {
@@ -24,27 +23,27 @@ class _DetailpetState extends State<Detailpet> {
   int currentGender = 0;
   String gender;
 
-  editPetProfile() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => Editpet(
-                  currentPet: widget.petId,
-                  userProfileId: widget.userProfileid,
-                  currentGender: currentGender,
-                )));
-  }
+  // editPetProfile() {
+  //   Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => Editpet(
+  //                 currentPet: widget.petId,
+  //                 userProfileId: widget.userProfileid,
+  //                 currentGender: currentGender,
+  //               )));
+  // }
 
   // PageController _myPage = PageContr
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return StreamBuilder(
-      stream: petRefrence
+    return FutureBuilder(
+      future: petRefrence
           .doc(widget.userProfileid)
           .collection("usersPets")
           .doc(widget.petId)
-          .snapshots(),
+          .get(),
       builder: (BuildContext context, AsyncSnapshot dataSnapshot) {
         if (!dataSnapshot.hasData) {
           return Row(
@@ -155,7 +154,7 @@ class _DetailpetState extends State<Detailpet> {
                                 MaterialIcons.edit,
                                 size: 33,
                               ),
-                              onPressed: () => editPetProfile())
+                              onPressed: () => {})
                         ],
                       ),
                     ),

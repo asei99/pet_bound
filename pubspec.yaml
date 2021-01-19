@@ -37,6 +37,12 @@ dependencies:
   firebase_auth: ^0.18.4+1
   firebase_messaging: ^7.0.3
   firebase_core: ^0.5.3
+  image_picker: ^0.6.7+17
+  path_provider: ^1.6.24
+  image: ^2.1.19
+  uuid: ^2.2.2
+  cached_network_image: ^2.5.0
+  timeago: ^2.0.29
 
 dev_dependencies:
   flutter_test:

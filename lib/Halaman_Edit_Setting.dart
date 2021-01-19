@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 
-
 @override
 Widget build(BuildContext context) {
   // final double statusBarHeight = MediaQuery.of(context).padding.top;
@@ -31,16 +30,7 @@ Widget build(BuildContext context) {
               child: Stack(
                 children: <Widget>[
                   Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.centerRight,
-                        end: Alignment.centerLeft,
-                        colors: [
-                          const Color.fromRGBO(0, 64, 225, 1),
-                          const Color.fromRGBO(0, 225, 225, 1),
-                        ],
-                      ),
-                    ),
+                    decoration: BoxDecoration(),
                     height: size.height * 0.15,
                   ),
                   // Container(

@@ -1,89 +1,101 @@
+import 'package:Pet_Bound/Model/m_user.dart';
+import 'package:Pet_Bound/Widget/post_widget.dart';
+import 'package:Pet_Bound/socialmedia/home_page.dart';
+import 'package:Pet_Bound/socialmedia/notification_page.dart';
+import 'package:Pet_Bound/socialmedia/search_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-void newsfeed(BuildContext ctx) {
-  Navigator.of(ctx).pushReplacementNamed('/socialmedia/Home');
-}
-
-void pets(BuildContext ctx) {
-  Navigator.of(ctx).pushReplacementNamed('/socialmedia/pets');
-}
-
-void event(BuildContext ctx) {
-  Navigator.of(ctx).pushReplacementNamed('/event/place');
-}
-
-void profile(BuildContext ctx) {
-  Navigator.of(ctx).pushReplacementNamed('/socialmedia/profile');
-}
 
 void userprofile(BuildContext ctx) {
   Navigator.of(ctx).pushReplacementNamed('/socialmedia/user_profile');
 }
 
-class Newsfeed extends StatelessWidget {
+void searchscreen(BuildContext ctx) {
+  Navigator.push(
+    ctx,
+    MaterialPageRoute(
+      builder: (context) => Searchscreen(),
+    ),
+  );
+}
+
+class Newsfeed extends StatefulWidget {
+  final Users currentUser;
+
+  Newsfeed({this.currentUser});
+  @override
+  _NewsfeedState createState() => _NewsfeedState();
+}
+
+class _NewsfeedState extends State<Newsfeed> {
+  List<Post> posts;
+  List<String> followingsList = [];
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    retrieveTimeLine();
+    retrieveFollowings();
+    print("timeline init success");
+  }
+
+  retrieveTimeLine() async {
+    QuerySnapshot querySnapshot = await timelineRefrence
+        .doc(widget.currentUser.id)
+        .collection("timelinePosts")
+        .orderBy("timestamp", descending: true)
+        .get();
+
+    List<Post> allPosts = querySnapshot.docs
+        .map((document) => Post.fromDocument(document))
+        .toList();
+
+    setState(() {
+      this.posts = allPosts;
+    });
+  }
+
+  retrieveFollowings() async {
+    QuerySnapshot querySnapshot = await followingReference
+        .doc(currentUser.id)
+        .collection("userFollowing")
+        .get();
+
+    setState(() {
+      followingsList =
+          querySnapshot.docs.map((document) => document.id).toList();
+    });
+  }
+
+  createUserTimeLine() {
+    if (posts == null) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(child: CircularProgressIndicator()),
+        ],
+      );
+    } else {
+      return ListView(
+        children: posts,
+      );
+    }
+  }
+
+  displayNotification() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NotificationsPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: Container(
-        padding: EdgeInsets.all(3),
-        height: 65.0,
-        width: 65.0,
-        child: FittedBox(
-          child: FloatingActionButton(
-            onPressed: () {},
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            // elevation: 5.0,
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        child: Container(
-          height: 50,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(
-                iconSize: 30.0,
-                padding: EdgeInsets.only(left: 28.0),
-                icon: Icon(Icons.home),
-                onPressed: () => newsfeed(context),
-              ),
-              IconButton(
-                iconSize: 30.0,
-                padding: EdgeInsets.only(right: 28.0),
-                icon: Icon(
-                  MaterialIcons.pets,
-                  size: 25,
-                ),
-                onPressed: () => pets(context),
-              ),
-              IconButton(
-                iconSize: 30.0,
-                padding: EdgeInsets.only(left: 28.0),
-                icon: Icon(
-                  MaterialIcons.event,
-                  size: 25,
-                ),
-                onPressed: () => event(context),
-              ),
-              IconButton(
-                iconSize: 30.0,
-                padding: EdgeInsets.only(right: 28.0),
-                icon: Icon(MaterialIcons.person),
-                onPressed: () => profile(context),
-              )
-            ],
-          ),
-        ),
-      ),
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -108,7 +120,7 @@ class Newsfeed extends StatelessWidget {
               Feather.heart,
               color: Color.fromRGBO(237, 171, 172, 5),
             ),
-            onPressed: () => FirebaseAuth.instance.signOut(),
+            onPressed: () => displayNotification(),
           ),
           IconButton(
             padding: EdgeInsets.symmetric(horizontal: 10),
@@ -117,197 +129,16 @@ class Newsfeed extends StatelessWidget {
               Feather.search,
               color: Color.fromRGBO(237, 171, 172, 5),
             ),
-            onPressed: () => {},
+            onPressed: () => searchscreen(context),
           ),
         ],
       ),
       // bottomNavigationBar: Navigationbar(),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.only(left: 20, right: 20, top: 20),
-          child: Column(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 1 / 2.6,
-                      // color: Colors.grey,
-                      width: double.infinity,
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            height: MediaQuery.of(context).size.height * 1 / 14,
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            child: Row(
-                              children: <Widget>[
-                                CircleAvatar(
-                                  radius: 20.0,
-                                  backgroundImage: NetworkImage(
-                                      "https://i.pinimg.com/originals/ef/78/0c/ef780c022fccf00447404064c8d4c28c.jpg"),
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                GestureDetector(
-                                  onTap: () => userprofile(context),
-                                  child: Text('Otin bin otin'),
-                                )
-                              ],
-                            ),
-                          ),
-                          Container(
-                            color: Colors.black,
-                            height: MediaQuery.of(context).size.height * 1 / 4,
-                            width: double.infinity,
-                            child: new DecoratedBox(
-                              decoration: new BoxDecoration(
-                                image: new DecorationImage(
-                                  image: NetworkImage(
-                                      "https://awsimages.detik.net.id/community/media/visual/2020/01/16/6ce92f53-c1e5-4f94-ab17-95e4d30537e0.jpeg?w=750&q=90                                          "),
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(
-                              left: 20,
-                              top: 10,
-                              right: 10,
-                            ),
-                            child: Row(
-                              // mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text('Like my new selfie!'),
-                                Spacer(),
-                                IconButton(
-                                  padding: EdgeInsets.zero,
-                                  constraints: BoxConstraints(),
-                                  // padding: EdgeInsets.only(left: 250),
-                                  icon: Icon(
-                                    MaterialIcons.favorite_border,
-                                    size: 20,
-                                  ),
-                                  onPressed: () => {},
-                                ),
-                                Text('1K'),
-                                IconButton(
-                                  padding: EdgeInsets.only(
-                                    left: 10,
-                                  ),
-                                  constraints: BoxConstraints(),
-                                  // padding: EdgeInsets.only(left: 250),
-                                  icon: Icon(
-                                    Icons.comment,
-                                    size: 20,
-                                  ),
-                                  onPressed: () => {},
-                                ),
-                                Text('5'),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 1 / 2.6,
-                      // color: Colors.grey,
-                      width: double.infinity,
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            height: MediaQuery.of(context).size.height * 1 / 14,
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            child: Row(
-                              children: <Widget>[
-                                CircleAvatar(
-                                  radius: 20.0,
-                                  backgroundImage: NetworkImage(
-                                      "https://i.pinimg.com/originals/ef/78/0c/ef780c022fccf00447404064c8d4c28c.jpg"),
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Text('Otin bin otin'),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            color: Colors.black,
-                            height: MediaQuery.of(context).size.height * 1 / 4,
-                            width: double.infinity,
-                            child: new DecoratedBox(
-                              decoration: new BoxDecoration(
-                                image: new DecorationImage(
-                                  image: NetworkImage(
-                                      "https://awsimages.detik.net.id/community/media/visual/2020/01/16/6ce92f53-c1e5-4f94-ab17-95e4d30537e0.jpeg?w=750&q=90                                          "),
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(
-                              left: 20,
-                              top: 10,
-                              right: 10,
-                            ),
-                            child: Row(
-                              // mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text('Like my new selfie!'),
-                                Spacer(),
-                                IconButton(
-                                  padding: EdgeInsets.zero,
-                                  constraints: BoxConstraints(),
-                                  // padding: EdgeInsets.only(left: 250),
-                                  icon: Icon(
-                                    MaterialIcons.favorite_border,
-                                    size: 20,
-                                  ),
-                                  onPressed: () => {},
-                                ),
-                                Text('1K'),
-                                IconButton(
-                                  padding: EdgeInsets.only(
-                                    left: 10,
-                                  ),
-                                  constraints: BoxConstraints(),
-                                  // padding: EdgeInsets.only(left: 250),
-                                  icon: Icon(
-                                    Icons.comment,
-                                    size: 20,
-                                  ),
-                                  onPressed: () => {},
-                                ),
-                                Text('5'),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+      body:
+          // Text(posts.toString())
+          RefreshIndicator(
+        child: createUserTimeLine(),
+        onRefresh: () => retrieveTimeLine(),
       ),
     );
   }

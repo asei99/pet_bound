@@ -1,177 +1,356 @@
+import 'package:Pet_Bound/Model/m_user.dart';
+import 'package:Pet_Bound/Widget/post_tile_widget.dart';
+import 'package:Pet_Bound/Widget/post_widget.dart';
 import 'package:Pet_Bound/auth_screen.dart';
+import 'package:Pet_Bound/socialmedia/edit_profile.dart';
+import 'package:Pet_Bound/socialmedia/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-void newsfeed(BuildContext ctx) {
-  Navigator.of(ctx).pushReplacementNamed('/socialmedia/Home');
-}
-
-void pets(BuildContext ctx) {
-  Navigator.of(ctx).pushReplacementNamed('/socialmedia/pets');
-}
-
-void event(BuildContext ctx) {
-  Navigator.of(ctx).pushReplacementNamed('/event/place');
-}
-
-void profile(BuildContext ctx) {
-  Navigator.of(ctx).pushReplacementNamed('/socialmedia/profile');
-}
-
-List imgList = [
-  'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
-  'https://i.pinimg.com/originals/c5/99/0e/c5990e4548a963af7f3cab348353abb7.jpg',
-  'https://i.pinimg.com/736x/9c/fe/3c/9cfe3c71158e7c45606398a1046f13c6.jpg',
-  'https://i.pinimg.com/736x/d3/13/73/d313731071519493f17588681179fc5d.jpg',
-  'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
-  'https://i.pinimg.com/originals/c5/99/0e/c5990e4548a963af7f3cab348353abb7.jpg',
-  'https://i.pinimg.com/736x/9c/fe/3c/9cfe3c71158e7c45606398a1046f13c6.jpg',
-  'https://i.pinimg.com/736x/d3/13/73/d313731071519493f17588681179fc5d.jpg',
-  'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
-  'https://i.pinimg.com/originals/c5/99/0e/c5990e4548a963af7f3cab348353abb7.jpg',
-  'https://i.pinimg.com/736x/9c/fe/3c/9cfe3c71158e7c45606398a1046f13c6.jpg',
-  'https://i.pinimg.com/736x/d3/13/73/d313731071519493f17588681179fc5d.jpg',
-];
-
 class Profile extends StatefulWidget {
+  final String userProfileId;
+
+  Profile({this.userProfileId});
   @override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
+  bool loading = false;
+  int countPost = 0;
+
+  List<Post> postsList = [];
+  static List<String> tabList = ['Post', 'Pet'];
+  int selectedIndex = 0;
+  int countTotalFollowers = 0;
+  int countTotalFollowings = 0;
+  bool following = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // WidgetsBinding.instance
+    //     .addPostFrameCallback((_) => getAllProfilePosts(context));
+    // SchedulerBinding.instance
+    // .addPostFrameCallback((timeStamp) => {getAllProfilePosts(context)});
+
+    getAllProfilePosts();
+    getAllFollowers();
+    getAllFollowings();
+    checkIfAlreadyFollowing();
+  }
+
+  getAllFollowings() async {
+    QuerySnapshot querySnapshot = await followingReference
+        .doc(widget.userProfileId)
+        .collection("userFollowing")
+        .get();
+
+    setState(() {
+      countTotalFollowings = querySnapshot.docs.length;
+    });
+  }
+
+  checkIfAlreadyFollowing() async {
+    DocumentSnapshot documentSnapshot = await followersReference
+        .doc(widget.userProfileId)
+        .collection("userFollowers")
+        .doc(currentUser.id)
+        .get();
+
+    setState(() {
+      following = documentSnapshot.exists;
+    });
+  }
+
+  getAllFollowers() async {
+    QuerySnapshot querySnapshot = await followersReference
+        .doc(widget.userProfileId)
+        .collection("userFollowers")
+        .get();
+
+    setState(() {
+      countTotalFollowers = querySnapshot.docs.length;
+    });
+  }
+
+  void changeIndex(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
+
+  editUserProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Editprofile()),
+    );
+  }
+
+  Container createButtonTitleAndFunction(
+      {String title, Function performFunction}) {
+    return Container(
+      child: FlatButton(
+        onPressed: performFunction,
+        child: Container(
+          margin: EdgeInsets.only(top: 180),
+          // alignment: Alignment.bottomRight,
+          width: 100,
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.grey,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Center(
+            child: Text(title),
+          ),
+        ),
+      ),
+    );
+  }
+
+  createButton() {
+    bool ownProfile = currentUser.id == widget.userProfileId;
+    if (ownProfile) {
+      return createButtonTitleAndFunction(
+        title: "Edit Profile",
+        performFunction: editUserProfile,
+      );
+    } else if (following) {
+      return createButtonTitleAndFunction(
+        title: "Unfollow",
+        performFunction: controlUnfollowUser,
+      );
+    } else if (!following) {
+      return createButtonTitleAndFunction(
+        title: "Follow",
+        performFunction: controlFollowUser,
+      );
+    }
+  }
+
+  controlUnfollowUser() {
+    setState(() {
+      following = false;
+    });
+
+    followersReference
+        .doc(widget.userProfileId)
+        .collection("userFollowers")
+        .doc(currentUser.id)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
+    followingReference
+        .doc(currentUser.id)
+        .collection("userFollowing")
+        .doc(widget.userProfileId)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
+
+    activityFeedReference
+        .doc(widget.userProfileId)
+        .collection("feedItems")
+        .doc(currentUser.id)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
+    setState(() {
+      getAllFollowers();
+    });
+  }
+
+  controlFollowUser() {
+    setState(() {
+      following = true;
+    });
+
+    followersReference
+        .doc(widget.userProfileId)
+        .collection("userFollowers")
+        .doc(currentUser.id)
+        .set({});
+
+    followingReference
+        .doc(currentUser.id)
+        .collection("userFollowing")
+        .doc(widget.userProfileId)
+        .set({});
+
+    activityFeedReference
+        .doc(widget.userProfileId)
+        .collection("feedItems")
+        .doc(currentUser.id)
+        .set({
+      "type": "follow",
+      "ownerId": widget.userProfileId,
+      "username": currentUser.userName,
+      "timestamp": DateTime.now(),
+      "userProfileImg": currentUser.image,
+      "userId": currentUser.id,
+    });
+    setState(() {
+      getAllFollowers();
+    });
+  }
+
+  List petList = [
+    'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
+    'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
+    'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
+    'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
+    'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
+  ];
+
+  Widget pet() {
+    return Column(
+      children: postsList,
+    );
+  }
+
+  Widget tabView(String txt, int index) {
+    return GestureDetector(
+      onTap: () => changeIndex(index),
+      child: Container(
+        decoration: BoxDecoration(
+            border: selectedIndex == index
+                ? Border(
+                    bottom: BorderSide(
+                      width: 2,
+                      color: Color.fromRGBO(237, 171, 172, 5),
+                    ),
+                  )
+                : Border(
+                    bottom: BorderSide(width: 2, color: Colors.grey),
+                  )),
+        child: Text(
+          txt,
+          style: TextStyle(
+            fontSize: 25,
+
+            // color: Colors.blue,
+            fontFamily: 'lato',
+          ),
+        ),
+      ),
+    );
+  }
+
+  getAllProfilePosts() async {
+    setState(() {
+      loading = true;
+    });
+    QuerySnapshot querySnapshot = await postsReference
+        .doc(widget.userProfileId)
+        .collection("usersPosts")
+        .orderBy("timestamp", descending: true)
+        .get();
+
+    setState(() {
+      loading = false;
+      countPost = querySnapshot.docs.length;
+
+      postsList = querySnapshot.docs
+          .map((documentSnapshot) => Post.fromDocument(documentSnapshot))
+          .toList();
+    });
+  }
+
+  Widget post() {
+    if (loading) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(child: CircularProgressIndicator()),
+        ],
+      );
+    } else if (postsList.isEmpty) {
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('no data found'),
+          ],
+        ),
+      );
+    }
+    List<GridTile> gridTileList = [];
+    postsList.forEach((eachPost) {
+      gridTileList.add(GridTile(child: PostTile(eachPost)));
+    });
+    return GridView.count(
+        crossAxisCount: 3,
+        childAspectRatio: 1.0,
+        mainAxisSpacing: 1.5,
+        crossAxisSpacing: 1.5,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        children: gridTileList);
+  }
+
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      floatingActionButton: Container(
-        padding: EdgeInsets.all(3),
-        height: 65.0,
-        width: 65.0,
-        child: FittedBox(
-          child: FloatingActionButton(
-            onPressed: () {},
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            // elevation: 5.0,
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        child: Container(
-          height: 50,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(
-                iconSize: 30.0,
-                padding: EdgeInsets.only(left: 28.0),
-                icon: Icon(Icons.home),
-                onPressed: () => newsfeed(context),
-              ),
-              IconButton(
-                iconSize: 30.0,
-                padding: EdgeInsets.only(right: 28.0),
-                icon: Icon(
-                  MaterialIcons.pets,
-                  size: 25,
-                ),
-                onPressed: () => pets(context),
-              ),
-              IconButton(
-                iconSize: 30.0,
-                padding: EdgeInsets.only(left: 28.0),
-                icon: Icon(
-                  MaterialIcons.event,
-                  size: 25,
-                ),
-                onPressed: () => event(context),
-              ),
-              IconButton(
-                iconSize: 30.0,
-                padding: EdgeInsets.only(right: 28.0),
-                icon: Icon(MaterialIcons.person),
-                onPressed: () => profile(context),
-              )
-            ],
-          ),
-        ),
-      ),
+    bool ownProfile = currentUser.id == widget.userProfileId;
 
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        centerTitle: false,
-        toolbarHeight: MediaQuery.of(context).size.height * 1 / 14,
-        iconTheme: IconThemeData(
-          color: Color.fromRGBO(237, 171, 172, 5),
-        ),
-        title: FutureBuilder(
-          future: FirebaseFirestore.instance
-              .collection('users')
-              .doc(FirebaseAuth.instance.currentUser.uid)
-              .get(),
-          builder: (context, snapshot) {
-            if (snapshot.data['username'] = null) {
-              return Text('null');
-            } else {
-              return Text(snapshot.data['username']);
+    Size size = MediaQuery.of(context).size;
+    createProfileTop() {
+      return StreamBuilder(
+          stream: usersReference.doc(widget.userProfileId).snapshots(),
+          builder: (BuildContext context, AsyncSnapshot dataSnapshot) {
+            if (!dataSnapshot.hasData) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(child: CircularProgressIndicator()),
+                ],
+              );
             }
-          },
-        ),
-        // Text(
-        //   'Otin bin otin',
-        //   // textAlign: TextAlign.left,
-        //   style:
-        //       TextStyle(fontFamily: 'acme', fontSize: 25, color: Colors.black),
-        // ),
-        actions: <Widget>[
-          IconButton(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            constraints: BoxConstraints(),
-            icon: Icon(
-              MaterialCommunityIcons.logout,
-              color: Color.fromRGBO(237, 171, 172, 5),
-            ),
-            onPressed: () {
-              FirebaseAuth auth = FirebaseAuth.instance;
-              auth.signOut().then((res) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => AuthScreen()),
-                );
-              });
-            },
-          ),
-        ],
-      ),
-      // bottomNavigationBar: Navigationbar(),
-      // endDrawer: MainDrawer(),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Container(
-            child: Column(
+            Users user = Users.fromDocument(dataSnapshot.data);
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 1 / 3.5,
-                    // color: Colors.grey,
-                    width: double.infinity,
-                    child: Image.network(
-                      "https://awsimages.detik.net.id/community/media/visual/2020/01/16/6ce92f53-c1e5-4f94-ab17-95e4d30537e0.jpeg?w=750&q=90                                          ",
-                      fit: BoxFit.fill,
+              children: [
+                Stack(
+                  children: [
+                    Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Container(
+                        height: 200,
+                        //  MediaQuery.of(context).size.height * 1 / 3.5,
+                        // color: Colors.grey,
+                        width: double.infinity,
+                        child: user.image == ""
+                            ? Center(
+                                child: Text(
+                                'no image yet',
+                                style:
+                                    TextStyle(fontSize: 30, color: Colors.grey),
+                              ))
+                            : Image.network(
+                                user.image,
+                                fit: BoxFit.fill,
+                              ),
+                      ),
                     ),
-                  ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: createButton(),
+                    )
+                  ],
                 ),
                 SizedBox(
                   height: 15,
@@ -183,8 +362,7 @@ class _ProfileState extends State<Profile> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                          'asdgfjkhsadkfhskahfksdlhfksadhkflhsakfhskjdahfkjdsahkfldhsajkldfhjkshfkldsahfksadhfkdshkflashfhdasjklhlk'),
+                      Text(user.bio),
                       SizedBox(
                         height: 15,
                       ),
@@ -200,13 +378,23 @@ class _ProfileState extends State<Profile> {
                                   color: Colors.grey,
                                 )),
                               ),
-                              child: Center(
-                                child: Text(
-                                  ' 120\nPosts',
-                                  style: TextStyle(
-                                      fontFamily: 'lato',
-                                      fontWeight: FontWeight.bold),
-                                ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '$countPost',
+                                    style: TextStyle(
+                                        fontFamily: 'lato',
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    'posts',
+                                    style: TextStyle(
+                                        fontFamily: 'lato',
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -220,71 +408,196 @@ class _ProfileState extends State<Profile> {
                                   color: Colors.grey,
                                 )),
                               ),
-                              child: Center(
-                                child: Text(
-                                  '       120\nFollowers',
-                                  style: TextStyle(
-                                      fontFamily: 'lato',
-                                      fontWeight: FontWeight.bold),
-                                ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '$countTotalFollowings',
+                                    style: TextStyle(
+                                        fontFamily: 'lato',
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    'Followings',
+                                    style: TextStyle(
+                                        fontFamily: 'lato',
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                           Expanded(
                             child: Container(
                               height: size.height * 1 / 14,
-                              child: Center(
-                                child: Text(
-                                  '      120\nFollowing',
-                                  style: TextStyle(
-                                      fontFamily: 'lato',
-                                      fontWeight: FontWeight.bold),
-                                ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '$countTotalFollowers',
+                                    style: TextStyle(
+                                        fontFamily: 'lato',
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    'Followers',
+                                    style: TextStyle(
+                                        fontFamily: 'lato',
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ],
                       ),
-                      Container(
-                        height: size.height * 1 / 14,
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(width: 2, color: Colors.grey),
-                          ),
-                        ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+              ],
+            );
+          });
+    }
 
-                        // color: Colors.grey,
-                        width: double.infinity,
-                        child: Center(
-                          child: Text(
-                            'My Post',
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontFamily: 'lato',
-                                fontWeight: FontWeight.w500),
+    void back(BuildContext ctx) {
+      Navigator.of(ctx).pop();
+    }
+
+    createHeader() {
+      return FutureBuilder(
+          future: usersReference.doc(widget.userProfileId).get(),
+          builder: (context, dataSnapshot) {
+            if (!dataSnapshot.hasData) {
+              return CircularProgressIndicator();
+            }
+            Users user = Users.fromDocument(dataSnapshot.data);
+            bool ownProfile = currentUser.id == widget.userProfileId;
+            return Container(
+              width: double.infinity,
+              padding:
+                  EdgeInsets.only(left: 20, top: 10, bottom: 10, right: 10),
+              height: MediaQuery.of(context).size.height * 1 / 14,
+              decoration: BoxDecoration(boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: Colors.black54,
+                    blurRadius: 15.0,
+                    offset: Offset(0.0, 0.75))
+              ], color: Colors.white),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    // user.userName,
+                    user.userName,
+                    style: TextStyle(
+                        fontFamily: 'acme', fontSize: 25, color: Colors.black),
+                  ),
+                  ownProfile
+                      ? IconButton(
+                          constraints: BoxConstraints(),
+                          padding: EdgeInsets.zero,
+                          icon: Icon(
+                            MaterialCommunityIcons.logout,
+                            color: Color.fromRGBO(237, 171, 172, 5),
                           ),
+                          onPressed: () {
+                            FirebaseAuth auth = FirebaseAuth.instance;
+                            auth.signOut().then((res) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Mainmain()),
+                              );
+                            });
+                          },
+                        )
+                      : IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: BoxConstraints(),
+                          icon: Icon(
+                            MaterialIcons.arrow_back,
+                            color: Colors.black,
+                            size: 25,
+                            // size: 30,
+                          ),
+                          onPressed: () => back(context),
                         ),
-                      ),
+                ],
+              ),
+            );
+          });
+    }
+
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                createHeader(),
+                SizedBox(
+                  height: 1,
+                ),
+                createProfileTop(),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 30,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
                       Container(
-                        height: 250,
-                        child: GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                  childAspectRatio: 0.8),
-                          itemCount: imgList.length,
-                          itemBuilder: (context, index) => Card(
-                            elevation: 4,
-                            child: Container(
-                              // height: size.height,
-                              color: Colors.grey,
-                              child: Image.network(imgList[index]),
+                        child: Column(
+                          children: <Widget>[
+                            !ownProfile
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      tabView(tabList[0], 0),
+                                      // SizedBox(width: 80,)
+                                      tabView(tabList[1], 1),
+                                    ],
+                                  )
+                                : Container(
+                                    height: size.height * 1 / 14,
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                            width: 2,
+                                            color: Color.fromRGBO(
+                                                237, 171, 172, 5)),
+                                      ),
+                                    ),
+
+                                    // color: Colors.grey,
+                                    width: double.infinity,
+                                    child: Center(
+                                      child: Text(
+                                        'My Post',
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontFamily: 'lato',
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                  ),
+                            SizedBox(
+                              height: 10,
                             ),
-                          ),
+                            Container(
+                              height: 250,
+                              child: selectedIndex == 0 ? post() : pet(),
+                            ),
+                          ],
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),

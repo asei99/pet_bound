@@ -64,6 +64,8 @@ class _DetailpetState extends State<Detailpet> {
         pet.gender == "Male" ? currentGender = 0 : currentGender = 1;
         pet.gender == "Male" ? gender = "Male" : gender = "Female";
 
+        bool ownProfile = currentUser.id == pet.ownerId;
+
         return Scaffold(
           key: _scaffoldKey,
           body: Stack(
@@ -150,12 +152,14 @@ class _DetailpetState extends State<Detailpet> {
                             pet.petname,
                             style: TextStyle(fontFamily: 'acme', fontSize: 33),
                           ),
-                          IconButton(
-                              icon: Icon(
-                                MaterialIcons.edit,
-                                size: 33,
-                              ),
-                              onPressed: () => editPetProfile())
+                          ownProfile
+                              ? IconButton(
+                                  icon: Icon(
+                                    MaterialIcons.edit,
+                                    size: 33,
+                                  ),
+                                  onPressed: () => editPetProfile())
+                              : Text(""),
                         ],
                       ),
                     ),
@@ -323,11 +327,11 @@ class _DetailpetState extends State<Detailpet> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(top: 14),
+                padding: EdgeInsets.only(top: 14, left: size.width * 0.85),
                 child: IconButton(
                   icon: Icon(
                     MaterialIcons.arrow_back,
-                    color: Colors.white,
+                    color: Color.fromRGBO(237, 171, 172, 5),
                     size: 30,
                   ),
                   onPressed: () => back(context),

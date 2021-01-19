@@ -63,10 +63,10 @@ class _EventState extends State<Event> {
               ? Border(
                   bottom: BorderSide(
                     width: 2,
-                    color: Color.fromRGBO(237, 171, 172, 5),
+                    color: Color.fromRGBO(237, 171, 172, 40),
                   ),
                 )
-              : Border.all(color: Colors.grey),
+              : Border.all(color: Color.fromRGBO(237, 171, 172, 0)),
         ),
         child: Text(
           txt,
@@ -129,7 +129,7 @@ class _EventState extends State<Event> {
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.grey,
+            color: Color.fromRGBO(237, 171, 172, 0.3),
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(50),
               topRight: Radius.circular(50),

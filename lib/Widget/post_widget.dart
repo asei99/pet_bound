@@ -28,7 +28,7 @@ class Post extends StatefulWidget {
 
   factory Post.fromDocument(DocumentSnapshot doc) {
     return Post(
-      postId: doc.id,
+      postId: doc.data()["postId"],
       ownerId: doc.data()["ownerId"],
       likes: doc.data()["likes"],
       username: doc.data()["username"],
@@ -218,6 +218,16 @@ class _PostState extends State<Post> {
       }
     });
 
+    timelineRefrence
+        .doc(currentUser.id)
+        .collection("timelinePosts")
+        .doc(postId)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
     storageReference.child("post_$postId.jpg").delete();
 
     QuerySnapshot querySnapshot = await activityFeedReference

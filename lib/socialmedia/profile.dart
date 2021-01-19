@@ -1,7 +1,9 @@
 import 'package:Pet_Bound/Model/m_user.dart';
+import 'package:Pet_Bound/Widget/pet_tile_widget.dart';
+import 'package:Pet_Bound/Widget/pet_widget.dart';
 import 'package:Pet_Bound/Widget/post_tile_widget.dart';
 import 'package:Pet_Bound/Widget/post_widget.dart';
-import 'package:Pet_Bound/auth_screen.dart';
+
 import 'package:Pet_Bound/socialmedia/edit_profile.dart';
 import 'package:Pet_Bound/socialmedia/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,9 +20,10 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String userName;
   bool loading = false;
   int countPost = 0;
-
+  List<Petwidget> petsList = [];
   List<Post> postsList = [];
   static List<String> tabList = ['Post', 'Pet'];
   int selectedIndex = 0;
@@ -35,7 +38,7 @@ class _ProfileState extends State<Profile> {
     //     .addPostFrameCallback((_) => getAllProfilePosts(context));
     // SchedulerBinding.instance
     // .addPostFrameCallback((timeStamp) => {getAllProfilePosts(context)});
-
+    getAllProfilePets();
     getAllProfilePosts();
     getAllFollowers();
     getAllFollowings();
@@ -215,9 +218,39 @@ class _ProfileState extends State<Profile> {
   ];
 
   Widget pet() {
-    return Column(
-      children: postsList,
-    );
+    if (loading) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(child: CircularProgressIndicator()),
+        ],
+      );
+    } else if (postsList.isEmpty) {
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('no data found'),
+          ],
+        ),
+      );
+    }
+    List<GridTile> gridTileList = [];
+    petsList.forEach((eachPost) {
+      gridTileList.add(GridTile(
+          child: PetTile(
+        pet: eachPost,
+        userName: userName,
+      )));
+    });
+    return GridView.count(
+        crossAxisCount: 3,
+        childAspectRatio: 1.0,
+        mainAxisSpacing: 1.5,
+        crossAxisSpacing: 1.5,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        children: gridTileList);
   }
 
   Widget tabView(String txt, int index) {
@@ -264,6 +297,25 @@ class _ProfileState extends State<Profile> {
 
       postsList = querySnapshot.docs
           .map((documentSnapshot) => Post.fromDocument(documentSnapshot))
+          .toList();
+    });
+  }
+
+  getAllProfilePets() async {
+    setState(() {
+      loading = true;
+    });
+    QuerySnapshot querySnapshot = await petRefrence
+        .doc(widget.userProfileId)
+        .collection("usersPets")
+        .get();
+
+    setState(() {
+      loading = false;
+      countPost = querySnapshot.docs.length;
+
+      petsList = querySnapshot.docs
+          .map((documentSnapshot) => Petwidget.fromDocument(documentSnapshot))
           .toList();
     });
   }
@@ -318,6 +370,7 @@ class _ProfileState extends State<Profile> {
               );
             }
             Users user = Users.fromDocument(dataSnapshot.data);
+            userName = user.userName;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -521,7 +574,7 @@ class _ProfileState extends State<Profile> {
                           constraints: BoxConstraints(),
                           icon: Icon(
                             MaterialIcons.arrow_back,
-                            color: Colors.black,
+                            color: Color.fromRGBO(237, 171, 172, 5),
                             size: 25,
                             // size: 30,
                           ),

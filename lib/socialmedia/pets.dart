@@ -8,8 +8,8 @@ import 'package:flutter_icons/flutter_icons.dart';
 
 class Pets extends StatefulWidget {
   final String userPetId;
-
-  Pets({this.userPetId});
+  final String userName;
+  Pets({this.userPetId, this.userName});
   @override
   _PetsState createState() => _PetsState();
 }
@@ -17,6 +17,11 @@ class Pets extends StatefulWidget {
 class _PetsState extends State<Pets> {
   List<Petwidget> petList = [];
   bool loading = false;
+
+  void back(BuildContext ctx) {
+    Navigator.of(ctx).pop();
+  }
+
   // @override
   void initState() {
     super.initState();
@@ -60,6 +65,7 @@ class _PetsState extends State<Pets> {
   }
 
   createPetList() {
+    bool ownProfile = currentUser.id == widget.userPetId;
     return Container(
       // color: Colors.blue,
       child: Column(
@@ -71,23 +77,39 @@ class _PetsState extends State<Pets> {
             children: <Widget>[
               Container(
                 padding: EdgeInsets.only(left: 20, top: 15),
-                child: Text(
-                  "Your pet",
-                  style: TextStyle(
-                    fontFamily: 'lato',
-                    fontSize: 30,
-                  ),
-                ),
+                child: ownProfile
+                    ? Text(
+                        "Your pet",
+                        style: TextStyle(
+                          fontFamily: 'lato',
+                          fontSize: 30,
+                        ),
+                      )
+                    : Text(
+                        widget.userName,
+                        style: TextStyle(
+                          fontFamily: 'lato',
+                          fontSize: 30,
+                        ),
+                      ),
               ),
               Container(
                 padding: EdgeInsets.only(left: 20, top: 5, bottom: 30),
-                child: Text(
-                  'List',
-                  style: TextStyle(
-                    fontFamily: 'lato',
-                    fontSize: 30,
-                  ),
-                ),
+                child: ownProfile
+                    ? Text(
+                        'List',
+                        style: TextStyle(
+                          fontFamily: 'lato',
+                          fontSize: 30,
+                        ),
+                      )
+                    : Text(
+                        'Pet List',
+                        style: TextStyle(
+                          fontFamily: 'lato',
+                          fontSize: 30,
+                        ),
+                      ),
               ),
               CarouselSlider(
                   options: CarouselOptions(
@@ -106,6 +128,7 @@ class _PetsState extends State<Pets> {
 
   @override
   Widget build(BuildContext context) {
+    bool ownProfile = currentUser.id == widget.userPetId;
     if (loading == true) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -125,15 +148,27 @@ class _PetsState extends State<Pets> {
               TextStyle(fontFamily: 'acme', fontSize: 25, color: Colors.black),
         ),
         actions: <Widget>[
-          IconButton(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            constraints: BoxConstraints(),
-            icon: Icon(
-              AntDesign.pluscircleo,
-              color: Color.fromRGBO(237, 171, 172, 5),
-            ),
-            onPressed: () => createpets(context),
-          ),
+          ownProfile
+              ? IconButton(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  constraints: BoxConstraints(),
+                  icon: Icon(
+                    AntDesign.pluscircleo,
+                    color: Color.fromRGBO(237, 171, 172, 5),
+                  ),
+                  onPressed: () => createpets(context),
+                )
+              : IconButton(
+                  // padding: EdgeInsets.zero,
+                  // constraints: BoxConstraints(),
+                  icon: Icon(
+                    MaterialIcons.arrow_back,
+                    color: Color.fromRGBO(237, 171, 172, 5),
+                    size: 25,
+                    // size: 30,
+                  ),
+                  onPressed: () => back(context),
+                ),
         ],
       ),
       body: RefreshIndicator(

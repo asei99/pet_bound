@@ -251,8 +251,9 @@ class _CreatepetsState extends State<Createpets> {
     weigthTextEditingController.clear();
 
     setState(() {
+      imagePicked = false;
       file = null;
-
+      uploading = false;
       petId = Uuid().v4();
     });
   }
@@ -437,158 +438,91 @@ class _CreatepetsState extends State<Createpets> {
           onPressed: () => back(context),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 35, vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'tell us about',
-                style: TextStyle(
-                    fontFamily: 'lato',
-                    fontSize: 30,
-                    color: Color.fromRGBO(237, 171, 172, 5),
-                    fontWeight: FontWeight.w600),
-              ),
-              Text(
-                'your pet',
-                style: TextStyle(
-                    fontFamily: 'lato',
-                    fontSize: 30,
-                    color: Color.fromRGBO(237, 171, 172, 5),
-                    fontWeight: FontWeight.w600),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              imagePicked == false
-                  ? GestureDetector(
-                      onTap: () => takeImage(
-                          context), //BELUM COMPRESS DAN SAVE KE STORAGE
-                      child: Container(
-                        width: double.infinity,
-                        color: Colors.grey,
-                        height: MediaQuery.of(context).size.height * 1 / 6,
-                        child: Center(
-                          child: Text('input images'),
-                        ),
-                      ),
-                    )
-                  : GestureDetector(
-                      onTap: () => takeImage(
-                          context), //BELUM COMPRESS DAN SAVE KE STORAGE
-                      child: Container(
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 1 / 6,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                          image: FileImage(file),
-                          fit: BoxFit.cover,
-                        )),
-                      ),
-                    ),
-              SizedBox(
-                height: 15,
-              ),
-              Form(
-                key: _formKey,
+      body: uploading
+          ? LinearProgressIndicator()
+          : SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 35, vertical: 10),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('Name'),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'pet name is empty';
-                            }
-                            return null;
-                          },
-                          controller: nameTextEditingController,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 15),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            fillColor: Colors.grey,
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromRGBO(237, 171, 172, 5),
-                              ),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      'tell us about',
+                      style: TextStyle(
+                          fontFamily: 'lato',
+                          fontSize: 30,
+                          color: Color.fromRGBO(237, 171, 172, 5),
+                          fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      'your pet',
+                      style: TextStyle(
+                          fontFamily: 'lato',
+                          fontSize: 30,
+                          color: Color.fromRGBO(237, 171, 172, 5),
+                          fontWeight: FontWeight.w600),
                     ),
                     SizedBox(
                       height: 15,
                     ),
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    imagePicked == false
+                        ? GestureDetector(
+                            onTap: () => takeImage(
+                                context), //BELUM COMPRESS DAN SAVE KE STORAGE
+                            child: Container(
+                              width: double.infinity,
+                              color: Colors.grey,
+                              height:
+                                  MediaQuery.of(context).size.height * 1 / 6,
+                              child: Center(
+                                child: Text('input images'),
+                              ),
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () => takeImage(
+                                context), //BELUM COMPRESS DAN SAVE KE STORAGE
+                            child: Container(
+                              width: double.infinity,
+                              height:
+                                  MediaQuery.of(context).size.height * 1 / 6,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                image: FileImage(file),
+                                fit: BoxFit.cover,
+                              )),
+                            ),
+                          ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Form(
+                      key: _formKey,
+                      child: Column(
                         children: <Widget>[
-                          Text('Gender'),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              genderRadio(Createpets.lst[0], 0),
+                              Text('Name'),
                               SizedBox(
-                                width: 10,
+                                height: 10,
                               ),
-                              genderRadio(Createpets.lst[1], 1),
-                            ],
-                          ),
-                        ]),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('Born Date'),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        InkWell(
-                          onTap: () => _selectDate(context),
-                          child: Container(
-                            // color: Colors.grey,
-                            // height: 45,
-                            child: AbsorbPointer(
-                              child: TextFormField(
+                              TextFormField(
                                 validator: (value) {
                                   if (value.isEmpty) {
-                                    return 'born date is empty';
+                                    return 'pet name is empty';
                                   }
                                   return null;
                                 },
-                                controller: formatedDateTextEditingController,
+                                controller: nameTextEditingController,
                                 decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                    icon: Icon(MaterialCommunityIcons.calendar),
-                                    onPressed: () => _selectDate(context),
-                                  ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 15),
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey),
                                     borderRadius: BorderRadius.circular(30),
                                   ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 15),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey),
                                     borderRadius: BorderRadius.circular(30),
@@ -602,119 +536,276 @@ class _CreatepetsState extends State<Createpets> {
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('Weight'),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 5,
-                              child: Container(
-                                // color: Colors.grey,
-
-                                child: TextFormField(
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      return 'Weight is empty';
-                                    }
-                                    return null;
-                                  },
-                                  controller: weigthTextEditingController,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(30),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text('Gender'),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    genderRadio(Createpets.lst[0], 0),
+                                    SizedBox(
+                                      width: 10,
                                     ),
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 5, horizontal: 15),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color.fromRGBO(237, 171, 172, 5),
+                                    genderRadio(Createpets.lst[1], 1),
+                                  ],
+                                ),
+                              ]),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('Born Date'),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              InkWell(
+                                onTap: () => _selectDate(context),
+                                child: Container(
+                                  // color: Colors.grey,
+                                  // height: 45,
+                                  child: AbsorbPointer(
+                                    child: TextFormField(
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'born date is empty';
+                                        }
+                                        return null;
+                                      },
+                                      controller:
+                                          formatedDateTextEditingController,
+                                      decoration: InputDecoration(
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                              MaterialCommunityIcons.calendar),
+                                          onPressed: () => _selectDate(context),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.grey),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 15),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.grey),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        fillColor: Colors.grey,
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Color.fromRGBO(
+                                                237, 171, 172, 5),
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
                                       ),
-                                      borderRadius: BorderRadius.circular(30),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                height: 45,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(11),
-                                ),
-                                child: Center(
-                                  child: Text('KG'),
-                                ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('Weight'),
+                              SizedBox(
+                                height: 10,
                               ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('Height'),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 5,
-                              child: Container(
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 5,
+                                    child: Container(
+                                      // color: Colors.grey,
+
+                                      child: TextFormField(
+                                        validator: (value) {
+                                          if (value.isEmpty) {
+                                            return 'Weight is empty';
+                                          }
+                                          return null;
+                                        },
+                                        controller: weigthTextEditingController,
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.grey),
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 15),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.grey),
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Color.fromRGBO(
+                                                  237, 171, 172, 5),
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      height: 45,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius: BorderRadius.circular(11),
+                                      ),
+                                      child: Center(
+                                        child: Text('KG'),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('Height'),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 5,
+                                    child: Container(
+                                      // color: Colors.grey,
+                                      // height: 45,
+                                      child: TextFormField(
+                                        validator: (value) {
+                                          if (value.isEmpty) {
+                                            return 'Height is empty';
+                                          }
+                                          return null;
+                                        },
+                                        controller: heightTextEditingController,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 15),
+                                          border: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.grey),
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.grey),
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Color.fromRGBO(
+                                                  237, 171, 172, 5),
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      height: 45,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius: BorderRadius.circular(11),
+                                      ),
+                                      child: Center(
+                                        child: Text('CM'),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          displayDropDown(),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('Breed'),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
                                 // color: Colors.grey,
                                 // height: 45,
                                 child: TextFormField(
                                   validator: (value) {
                                     if (value.isEmpty) {
-                                      return 'Height is empty';
+                                      return 'Breed is empty';
                                     }
                                     return null;
                                   },
-                                  controller: heightTextEditingController,
+                                  controller: breedTextEditingController,
                                   decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 5, horizontal: 15),
                                     border: OutlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Colors.grey),
                                       borderRadius: BorderRadius.circular(30),
                                     ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 15),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Colors.grey),
                                       borderRadius: BorderRadius.circular(30),
                                     ),
+                                    fillColor: Colors.grey,
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Color.fromRGBO(237, 171, 172, 5),
@@ -724,128 +815,62 @@ class _CreatepetsState extends State<Createpets> {
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                height: 45,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(11),
-                                ),
-                                child: Center(
-                                  child: Text('CM'),
-                                ),
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    displayDropDown(),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('Breed'),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          // color: Colors.grey,
-                          // height: 45,
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Breed is empty';
-                              }
-                              return null;
-                            },
-                            controller: breedTextEditingController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 15),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              fillColor: Colors.grey,
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromRGBO(237, 171, 172, 5),
-                                ),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('About'),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          // color: Colors.grey,
-                          // height: 45,
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'about is empty';
-                              }
-                              return null;
-                            },
-                            controller: aboutTextEditingController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 15),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              fillColor: Colors.grey,
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromRGBO(237, 171, 172, 5),
-                                ),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
+                          SizedBox(
+                            height: 15,
                           ),
-                        ),
-                      ],
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('About'),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                // color: Colors.grey,
+                                // height: 45,
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'about is empty';
+                                    }
+                                    return null;
+                                  },
+                                  controller: aboutTextEditingController,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 15),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    fillColor: Colors.grey,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color.fromRGBO(237, 171, 172, 5),
+                                      ),
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

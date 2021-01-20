@@ -28,7 +28,7 @@ class _EditprofileState extends State<Editprofile> {
 
   final _scaffoldGlobalKey = GlobalKey<ScaffoldState>();
   String profileId = Uuid().v4();
-
+  bool uploading = false;
   bool loading = false;
   Users user;
   bool _bioValid = true;
@@ -152,6 +152,7 @@ class _EditprofileState extends State<Editprofile> {
 
     FocusScope.of(context).unfocus();
     setState(() {
+      uploading = true;
       profileNameTextEditingController.text.trim().length < 3 ||
               profileNameTextEditingController.text.isEmpty
           ? _profileNameValid = false
@@ -172,6 +173,9 @@ class _EditprofileState extends State<Editprofile> {
         "image": downloadUrl,
         "profileurl": profileId,
       });
+      setState(() {
+        uploading = false;
+      });
       SnackBar successSnackBar =
           SnackBar(content: Text("Profile has been updated successfully."));
       _scaffoldGlobalKey.currentState.showSnackBar(successSnackBar);
@@ -186,8 +190,13 @@ class _EditprofileState extends State<Editprofile> {
         "bio": bioTextEditingController.text,
         "profileurl": profileId,
       });
-      SnackBar successSnackBar =
-          SnackBar(content: Text("Profile has been updated successfully."));
+      SnackBar successSnackBar = SnackBar(
+        content: Text(
+          "Profile has been updated successfully.",
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.green,
+      );
       _scaffoldGlobalKey.currentState.showSnackBar(successSnackBar);
 
       // clearPostInfo();
@@ -255,6 +264,7 @@ class _EditprofileState extends State<Editprofile> {
           Container(
             child: Column(
               children: <Widget>[
+                uploading ? LinearProgressIndicator() : Text(''),
                 // currentUser.image == null
                 //     ?
 
@@ -266,7 +276,7 @@ class _EditprofileState extends State<Editprofile> {
                           child: Container(
                             height: size.height * 1 / 6,
                             width: size.height * 1 / 6,
-                            child: user.image != null
+                            child: user.image != ""
                                 ? CircleAvatar(
                                     backgroundImage: NetworkImage(user.image),
                                     backgroundColor: Colors.grey[300],

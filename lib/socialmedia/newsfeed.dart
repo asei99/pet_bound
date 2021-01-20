@@ -36,7 +36,7 @@ class _NewsfeedState extends State<Newsfeed> {
   @override
   void initState() {
     retrieveTimeLine();
-    retrieveFollowings();
+    // retrieveFollowings();
     print("timeline init success");
   }
 
@@ -56,17 +56,17 @@ class _NewsfeedState extends State<Newsfeed> {
     });
   }
 
-  retrieveFollowings() async {
-    QuerySnapshot querySnapshot = await followingReference
-        .doc(currentUser.id)
-        .collection("userFollowing")
-        .get();
+  // retrieveFollowings() async {
+  //   QuerySnapshot querySnapshot = await followingReference
+  //       .doc(currentUser.id)
+  //       .collection("userFollowing")
+  //       .get();
 
-    setState(() {
-      followingsList =
-          querySnapshot.docs.map((document) => document.id).toList();
-    });
-  }
+  //   setState(() {
+  //     followingsList =
+  //         querySnapshot.docs.map((document) => document.id).toList();
+  //   });
+  // }
 
   createUserTimeLine() {
     if (posts == null) {

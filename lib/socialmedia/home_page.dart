@@ -87,6 +87,7 @@ class _MainmainState extends State<Mainmain> {
             .get();
 
         currentUser = Users.fromDocument(documentSnapshot);
+
         setState(() {
           isSignedIn = true;
         });
@@ -207,6 +208,7 @@ class _MainmainState extends State<Mainmain> {
               width: 65.0,
               child: FittedBox(
                 child: FloatingActionButton(
+                  // backgroundColor: Color.fromRGBO(237, 171, 172, 5),
                   heroTag: null,
                   onPressed: () => goUpload(),
                   child: Icon(
@@ -229,6 +231,10 @@ class _MainmainState extends State<Mainmain> {
               IconButton(
                 iconSize: 30.0,
                 padding: EdgeInsets.only(left: 28.0),
+                color: getPageIndex == 0
+                    ? Color.fromRGBO(237, 171, 172, 5)
+                    //  Colors.blue
+                    : Colors.black,
                 icon: Icon(Icons.home),
                 onPressed: () => goNewsFeed(),
               ),
@@ -238,12 +244,20 @@ class _MainmainState extends State<Mainmain> {
                 icon: Icon(
                   MaterialIcons.pets,
                   size: 25,
+                  color: getPageIndex == 1
+                      ? Color.fromRGBO(237, 171, 172, 5)
+                      //  Colors.blue
+                      : Colors.black,
                 ),
                 onPressed: () => goPet(),
               ),
               IconButton(
                 iconSize: 30.0,
                 padding: EdgeInsets.only(left: 28.0),
+                color: getPageIndex == 3
+                    ? Color.fromRGBO(237, 171, 172, 5)
+                    //  Colors.blue
+                    : Colors.black,
                 icon: Icon(
                   MaterialIcons.event,
                   size: 25,
@@ -254,6 +268,10 @@ class _MainmainState extends State<Mainmain> {
                 iconSize: 30.0,
                 padding: EdgeInsets.only(right: 28.0),
                 icon: Icon(MaterialIcons.person),
+                color: getPageIndex == 4
+                    ? Color.fromRGBO(237, 171, 172, 5)
+                    //  Colors.blue
+                    : Colors.black,
                 onPressed: () => goProfile(),
               )
             ],

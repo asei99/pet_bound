@@ -244,11 +244,14 @@ class _PetwidgetState extends State<Petwidget> {
           padding: EdgeInsets.all(10),
           width: MediaQuery.of(context).size.width * 1 / 4.5,
           decoration: BoxDecoration(
-            color: Colors.grey,
+            color: Color.fromRGBO(237, 171, 172, 5),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Center(
-            child: Text("Detail"),
+            child: Text(
+              "Detail",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ),

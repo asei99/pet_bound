@@ -325,7 +325,7 @@ class _PostState extends State<Post> {
 
         showHeart = true;
       });
-      Timer(Duration(milliseconds: 800), () {
+      Timer(Duration(milliseconds: 300), () {
         setState(() {
           showHeart = false;
         });
@@ -353,7 +353,7 @@ class _PostState extends State<Post> {
           ),
           showHeart
               ? Container(
-                  color: Colors.black,
+                  color: Colors.transparent,
                   height: MediaQuery.of(context).size.height * 1 / 4,
                   width: double.infinity,
                   child: Icon(

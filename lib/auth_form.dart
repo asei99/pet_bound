@@ -334,7 +334,6 @@ class _AuthFormState extends State<AuthForm> {
                       ),
                     ),
                   ),
-                  if (widget.isLoading) CircularProgressIndicator(),
                   if (!widget.isLoading)
                     Card(
                       shape: RoundedRectangleBorder(

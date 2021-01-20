@@ -66,62 +66,66 @@ class _PetsState extends State<Pets> {
 
   createPetList() {
     bool ownProfile = currentUser.id == widget.userPetId;
-    return Container(
-      // color: Colors.blue,
-      child: Column(
-        // mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(left: 20, top: 15),
-                child: ownProfile
-                    ? Text(
-                        "Your pet",
-                        style: TextStyle(
-                          fontFamily: 'lato',
-                          fontSize: 30,
-                        ),
-                      )
-                    : Text(
-                        widget.userName,
-                        style: TextStyle(
-                          fontFamily: 'lato',
-                          fontSize: 30,
-                        ),
-                      ),
-              ),
-              Container(
-                padding: EdgeInsets.only(left: 20, top: 5, bottom: 30),
-                child: ownProfile
-                    ? Text(
-                        'List',
-                        style: TextStyle(
-                          fontFamily: 'lato',
-                          fontSize: 30,
-                        ),
-                      )
-                    : Text(
-                        'Pet List',
-                        style: TextStyle(
-                          fontFamily: 'lato',
-                          fontSize: 30,
-                        ),
-                      ),
-              ),
-              CarouselSlider(
-                  options: CarouselOptions(
-                    height: MediaQuery.of(context).size.height * 1 / 1.75,
-                    initialPage: 0,
-                    enlargeCenterPage: true,
-                    reverse: true,
+    return GestureDetector(
+      child: Container(
+        // color: Colors.blue,
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                GestureDetector(
+                  child: Container(
+                    padding: EdgeInsets.only(left: 20, top: 15),
+                    child: ownProfile
+                        ? Text(
+                            "Your pet",
+                            style: TextStyle(
+                              fontFamily: 'lato',
+                              fontSize: 30,
+                            ),
+                          )
+                        : Text(
+                            widget.userName,
+                            style: TextStyle(
+                              fontFamily: 'lato',
+                              fontSize: 30,
+                            ),
+                          ),
                   ),
-                  items: petList),
-            ],
-          ),
-        ],
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 20, top: 5, bottom: 30),
+                  child: ownProfile
+                      ? Text(
+                          'List',
+                          style: TextStyle(
+                            fontFamily: 'lato',
+                            fontSize: 30,
+                          ),
+                        )
+                      : Text(
+                          'Pet List',
+                          style: TextStyle(
+                            fontFamily: 'lato',
+                            fontSize: 30,
+                          ),
+                        ),
+                ),
+                CarouselSlider(
+                    options: CarouselOptions(
+                      height: MediaQuery.of(context).size.height * 1 / 1.75,
+                      initialPage: 0,
+                      enlargeCenterPage: true,
+                      reverse: true,
+                    ),
+                    items: petList),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

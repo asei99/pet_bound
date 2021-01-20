@@ -45,6 +45,8 @@ class _UploadPageState extends State<UploadPage>
   }
 
   controlUploadAndSave() async {
+    FocusScope.of(context).unfocus();
+
     if (file == null) {
       var snackbar = SnackBar(
         content: Text("Please select an image"),
@@ -65,6 +67,15 @@ class _UploadPageState extends State<UploadPage>
         url: downloadUrl, description: descriptionTextEditingController.text);
 
     clearPostInfo();
+
+    var snackbar = SnackBar(
+      content: Text(
+        "Success Upload Post",
+        style: TextStyle(color: Colors.black),
+      ),
+      backgroundColor: Colors.green,
+    );
+    return _scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
   savePostInfoToTimelineFireStore({String url, String description}) {

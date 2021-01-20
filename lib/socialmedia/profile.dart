@@ -522,9 +522,9 @@ class _ProfileState extends State<Profile> {
     }
 
     createHeader() {
-      return FutureBuilder(
-          future: usersReference.doc(widget.userProfileId).get(),
-          builder: (context, dataSnapshot) {
+      return StreamBuilder(
+          stream: usersReference.doc(widget.userProfileId).snapshots(),
+          builder: (BuildContext context, AsyncSnapshot dataSnapshot) {
             if (!dataSnapshot.hasData) {
               return CircularProgressIndicator();
             }

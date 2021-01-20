@@ -20,7 +20,7 @@ class Event extends StatefulWidget {
 
 class _EventState extends State<Event> {
   int selectedIndex = 0;
-  static List<String> tabList = ['Contest', 'Place'];
+  static List<String> tabList = ['Event', 'Place'];
   bool loading = false;
   List<Eventwidget> contestList = [];
   List<Eventplacewidget> placeList = [];

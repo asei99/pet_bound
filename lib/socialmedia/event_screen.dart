@@ -296,7 +296,7 @@ class _EventScreenPageState extends State<EventScreenPage> {
                                   // color: Colors.blue,
                                   child: ListView.builder(
                                       scrollDirection: Axis.horizontal,
-                                      itemCount: category.length,
+                                      itemCount: contest.category.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return Container(

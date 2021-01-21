@@ -541,11 +541,18 @@ class _ProfileState extends State<Profile> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    // user.userName,
-                    user.userName,
-                    style: TextStyle(
-                        fontFamily: 'acme', fontSize: 25, color: Colors.black),
+                  GestureDetector(
+                    onDoubleTap: () => getAllProfilePosts(),
+                    child: Container(
+                      child: Text(
+                        // user.userName,
+                        user.userName,
+                        style: TextStyle(
+                            fontFamily: 'acme',
+                            fontSize: 25,
+                            color: Colors.black),
+                      ),
+                    ),
                   ),
                   ownProfile
                       ? IconButton(
@@ -615,26 +622,30 @@ class _ProfileState extends State<Profile> {
                                       tabView(tabList[1], 1),
                                     ],
                                   )
-                                : Container(
-                                    height: size.height * 1 / 14,
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                            width: 2,
-                                            color: Color.fromRGBO(
-                                                237, 171, 172, 5)),
+                                : GestureDetector(
+                                    onDoubleTap: () => getAllProfilePosts(),
+                                    child: Container(
+                                      height: size.height * 1 / 14,
+                                      decoration: BoxDecoration(
+                                        // color: Colors.blue,
+                                        border: Border(
+                                          bottom: BorderSide(
+                                              width: 2,
+                                              color: Color.fromRGBO(
+                                                  237, 171, 172, 5)),
+                                        ),
                                       ),
-                                    ),
 
-                                    // color: Colors.grey,
-                                    width: double.infinity,
-                                    child: Center(
-                                      child: Text(
-                                        'My Post',
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontFamily: 'lato',
-                                            fontWeight: FontWeight.w500),
+                                      // color: Colors.grey,
+                                      width: double.infinity,
+                                      child: Center(
+                                        child: Text(
+                                          'My Post',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontFamily: 'lato',
+                                              fontWeight: FontWeight.w500),
+                                        ),
                                       ),
                                     ),
                                   ),

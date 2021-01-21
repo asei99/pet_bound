@@ -1,3 +1,4 @@
+import 'package:Pet_Bound/Widget/post_profile_widget.dart';
 import 'package:Pet_Bound/Widget/post_widget.dart';
 import 'package:Pet_Bound/socialmedia/home_page.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class PostScreenPage extends StatelessWidget {
           );
         }
 
-        Post post = Post.fromDocument(dataSnapshot.data);
+        Postprofile post = Postprofile.fromDocument(dataSnapshot.data);
         return Center(
           child: Scaffold(
             body: ListView(

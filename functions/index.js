@@ -203,6 +203,20 @@ exports.onUpdatePost = functions.firestore
             doc.ref.update(postUpdated);
           }
         });
+        admin
+        .firestore()
+        .collection("timeline")
+        .doc(userId)
+        .collection("timelinePosts")
+        .doc(postId)
+        .get()
+        .then(doc => {
+          if (doc.exists) {
+            doc.ref.update(postUpdated);
+          }
+        });
+
+        
     });
   });
 

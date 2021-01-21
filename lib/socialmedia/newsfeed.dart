@@ -37,7 +37,6 @@ class _NewsfeedState extends State<Newsfeed> {
   void initState() {
     retrieveTimeLine();
     // retrieveFollowings();
-    print("timeline init success");
   }
 
   retrieveTimeLine() async {

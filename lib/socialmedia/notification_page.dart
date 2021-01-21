@@ -172,7 +172,7 @@ class NotificationItem extends StatelessWidget {
     if (type == "like") {
       notificationItemText = "liked your post.";
     } else if (type == "comment") {
-      notificationItemText = "replied: $commentData";
+      notificationItemText = "Comment: $commentData";
     } else if (type == "follow") {
       notificationItemText = "started following you.";
     } else {

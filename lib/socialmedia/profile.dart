@@ -294,7 +294,6 @@ class _ProfileState extends State<Profile> {
     setState(() {
       loading = false;
       countPost = querySnapshot.docs.length;
-
       postsList = querySnapshot.docs
           .map((documentSnapshot) => Post.fromDocument(documentSnapshot))
           .toList();
@@ -312,8 +311,6 @@ class _ProfileState extends State<Profile> {
 
     setState(() {
       loading = false;
-      countPost = querySnapshot.docs.length;
-
       petsList = querySnapshot.docs
           .map((documentSnapshot) => Petwidget.fromDocument(documentSnapshot))
           .toList();

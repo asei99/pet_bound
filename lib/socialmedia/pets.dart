@@ -15,6 +15,8 @@ class Pets extends StatefulWidget {
 }
 
 class _PetsState extends State<Pets> {
+  // final _scaffoldGlobalKey = GlobalKey<ScaffoldState>();
+
   List<Petwidget> petList = [];
   bool loading = false;
 
@@ -26,7 +28,14 @@ class _PetsState extends State<Pets> {
   void initState() {
     super.initState();
     getAllPet();
+    // showMessage();
   }
+
+  // showMessage() {
+  //   SnackBar successSnackBar =
+  //       SnackBar(content: Text("Tap Title to reload this page"));
+  //   _scaffoldGlobalKey.currentState.showSnackBar(successSnackBar);
+  // }
 
   getAllPet() async {
     setState(() {
@@ -77,6 +86,7 @@ class _PetsState extends State<Pets> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 GestureDetector(
+                  onDoubleTap: () => getAllPet(),
                   child: Container(
                     padding: EdgeInsets.only(left: 20, top: 15),
                     child: ownProfile
@@ -96,23 +106,26 @@ class _PetsState extends State<Pets> {
                           ),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.only(left: 20, top: 5, bottom: 30),
-                  child: ownProfile
-                      ? Text(
-                          'List',
-                          style: TextStyle(
-                            fontFamily: 'lato',
-                            fontSize: 30,
+                GestureDetector(
+                  onDoubleTap: () => getAllPet(),
+                  child: Container(
+                    padding: EdgeInsets.only(left: 20, top: 5, bottom: 30),
+                    child: ownProfile
+                        ? Text(
+                            'List',
+                            style: TextStyle(
+                              fontFamily: 'lato',
+                              fontSize: 30,
+                            ),
+                          )
+                        : Text(
+                            'Pet List',
+                            style: TextStyle(
+                              fontFamily: 'lato',
+                              fontSize: 30,
+                            ),
                           ),
-                        )
-                      : Text(
-                          'Pet List',
-                          style: TextStyle(
-                            fontFamily: 'lato',
-                            fontSize: 30,
-                          ),
-                        ),
+                  ),
                 ),
                 CarouselSlider(
                     options: CarouselOptions(
@@ -142,6 +155,7 @@ class _PetsState extends State<Pets> {
       );
     }
     return Scaffold(
+      // key: _scaffoldGlobalKey,
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,

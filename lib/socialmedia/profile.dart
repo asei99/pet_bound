@@ -38,8 +38,8 @@ class _ProfileState extends State<Profile> {
     //     .addPostFrameCallback((_) => getAllProfilePosts(context));
     // SchedulerBinding.instance
     // .addPostFrameCallback((timeStamp) => {getAllProfilePosts(context)});
-    getAllProfilePets();
     getAllProfilePosts();
+    getAllProfilePets();
     getAllFollowers();
     getAllFollowings();
     checkIfAlreadyFollowing();
@@ -225,7 +225,7 @@ class _ProfileState extends State<Profile> {
           Container(child: CircularProgressIndicator()),
         ],
       );
-    } else if (postsList.isEmpty) {
+    } else if (petList.isEmpty) {
       return Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

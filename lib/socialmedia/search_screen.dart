@@ -27,8 +27,12 @@ class _SearchscreenState extends State<Searchscreen>
   }
 
   controlSearching(String str) {
-    Future<QuerySnapshot> allUser =
-        userReference.where('username', arrayContains: str).get();
+    Future<QuerySnapshot> allUser = userReference
+        .where(
+          'username',
+          isGreaterThanOrEqualTo: str,
+        )
+        .get();
     setState(() {
       futureSearchResults = allUser;
     });

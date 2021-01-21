@@ -63,8 +63,8 @@ class _EditpetState extends State<Editpet> {
 
   void initState() {
     super.initState();
-    getAndDisplayPetInformation();
     getAllCategory();
+    getAndDisplayPetInformation();
   }
 
   getAllCategory() async {
@@ -127,7 +127,7 @@ class _EditpetState extends State<Editpet> {
     weigthTextEditingController.text = pet.weight;
     heightTextEditingController.text = pet.height;
     breedTextEditingController.text = pet.breed;
-    aboutTextEditingController.text = pet.breed;
+    aboutTextEditingController.text = pet.about;
     formatedDateTextEditingController.text = pet.borndate;
     petImage = pet.url;
     selectedIndex = widget.currentGender;

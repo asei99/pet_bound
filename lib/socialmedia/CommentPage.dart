@@ -120,7 +120,7 @@ class _CommentPageState extends State<CommentPage> {
               onPressed: saveComment,
               borderSide: BorderSide.none,
               child: Text(
-                "publish",
+                "send",
                 style: TextStyle(
                     color: Colors.lightGreenAccent,
                     fontWeight: FontWeight.bold),

@@ -7,6 +7,7 @@ class Users {
   String bio;
   String image;
   String profileurl;
+  String queryUserName;
 
   Users({
     this.id,
@@ -15,6 +16,7 @@ class Users {
     this.bio,
     this.image,
     this.profileurl,
+    this.queryUserName,
   });
 
   factory Users.fromDocument(DocumentSnapshot doc) {
@@ -24,6 +26,7 @@ class Users {
         userEmail: doc.data()['email'],
         bio: doc.data()['bio'],
         image: doc.data()['image'],
-        profileurl: doc.data()['profileurl']);
+        profileurl: doc.data()['profileurl'],
+        queryUserName: doc.data()['queryusername']);
   }
 }

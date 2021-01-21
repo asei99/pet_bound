@@ -209,14 +209,6 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  List petList = [
-    'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
-    'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
-    'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
-    'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
-    'https://i.pinimg.com/736x/c1/ae/6f/c1ae6f1ebb02b1473dfe6f9c2ff40bee.jpg',
-  ];
-
   Widget pet() {
     if (loading) {
       return Row(
@@ -225,7 +217,7 @@ class _ProfileState extends State<Profile> {
           Container(child: CircularProgressIndicator()),
         ],
       );
-    } else if (petList.isEmpty) {
+    } else if (petsList.isEmpty) {
       return Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

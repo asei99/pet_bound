@@ -77,6 +77,7 @@ class _MainmainState extends State<Mainmain> {
             .doc(authResult.user.uid)
             .set({
           'username': username,
+          'queryusername': username.toLowerCase(),
           'email': email,
           'bio': '',
           'id': authResult.user.uid,

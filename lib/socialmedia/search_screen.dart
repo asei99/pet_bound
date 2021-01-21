@@ -19,6 +19,8 @@ class _SearchscreenState extends State<Searchscreen>
   TextEditingController searchTextEditingController = TextEditingController();
   Future<QuerySnapshot> futureSearchResults;
   final userReference = FirebaseFirestore.instance.collection('users');
+  bool loading = false;
+  String searchName;
 
   emptyTextField() {
     searchTextEditingController.clear();
@@ -27,15 +29,33 @@ class _SearchscreenState extends State<Searchscreen>
   }
 
   controlSearching(String str) {
-    Future<QuerySnapshot> allUser = userReference
-        .where(
-          'username',
-          isGreaterThanOrEqualTo: str,
-        )
-        .get();
     setState(() {
-      futureSearchResults = allUser;
+      loading = true;
     });
+    if (str != "") {
+      Future<QuerySnapshot> allUser = userReference
+          .where(
+            'queryusername',
+            isGreaterThanOrEqualTo: str.toLowerCase(),
+          )
+          .get();
+      setState(() {
+        futureSearchResults = allUser;
+        loading = false;
+      });
+    }
+    setState(() {
+      loading = false;
+    });
+    // Future<QuerySnapshot> allUser = userReference
+    //     .where(
+    //       'username',
+    //       isGreaterThan: str,
+    //     )
+    //     .get();
+    // setState(() {
+    //   futureSearchResults = allUser;
+    // });
   }
 
   displayUserWidget() {
@@ -102,7 +122,8 @@ class _SearchscreenState extends State<Searchscreen>
                           Feather.search,
                         ),
                       ),
-                      onFieldSubmitted: controlSearching,
+                      onFieldSubmitted:
+                          controlSearching(searchTextEditingController.text),
                     ),
                   ),
                   SizedBox(
@@ -120,20 +141,37 @@ class _SearchscreenState extends State<Searchscreen>
                   )
                 ],
               ),
-              Container(
-                width: double.infinity,
-                child: futureSearchResults == null
-                    ? Padding(
-                        padding: EdgeInsets.only(top: size.height * 1 / 3),
-                        child: Center(
-                          child: Text(
-                            'no user found',
-                            style: TextStyle(fontSize: 30, color: Colors.grey),
-                          ),
-                        ),
-                      )
-                    : displayUserWidget(),
-              ),
+              //               if (loading == true) {
+              //   return Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       Container(child: CircularProgressIndicator()),
+              //     ],
+              //   );
+              // }
+              loading == true
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(child: CircularProgressIndicator()),
+                      ],
+                    )
+                  : Container(
+                      width: double.infinity,
+                      child: futureSearchResults == null
+                          ? Padding(
+                              padding:
+                                  EdgeInsets.only(top: size.height * 1 / 3),
+                              child: Center(
+                                child: Text(
+                                  'no user found',
+                                  style: TextStyle(
+                                      fontSize: 30, color: Colors.grey),
+                                ),
+                              ),
+                            )
+                          : displayUserWidget(),
+                    ),
             ],
           ),
         ),

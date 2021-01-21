@@ -169,10 +169,12 @@ class _EditprofileState extends State<Editprofile> {
       String downloadUrl = await uploadPhoto(file);
       usersReference.doc(currentUser.id).update({
         "username": profileNameTextEditingController.text,
+        "queryusername": profileNameTextEditingController.text.toLowerCase(),
         "bio": bioTextEditingController.text,
         "image": downloadUrl,
         "profileurl": profileId,
       });
+
       setState(() {
         uploading = false;
       });
@@ -187,6 +189,7 @@ class _EditprofileState extends State<Editprofile> {
     if (_bioValid && _profileNameValid) {
       usersReference.doc(currentUser.id).update({
         "username": profileNameTextEditingController.text,
+        "queryusername": profileNameTextEditingController.text.toLowerCase(),
         "bio": bioTextEditingController.text,
         "profileurl": profileId,
       });
@@ -197,6 +200,10 @@ class _EditprofileState extends State<Editprofile> {
         ),
         backgroundColor: Colors.green,
       );
+
+      setState(() {
+        uploading = false;
+      });
       _scaffoldGlobalKey.currentState.showSnackBar(successSnackBar);
 
       // clearPostInfo();

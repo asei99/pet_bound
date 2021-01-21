@@ -54,7 +54,8 @@ class _AuthFormState extends State<AuthForm> {
         child: Container(
           padding: EdgeInsets.all(25),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
                 height: MediaQuery.of(context).size.height * 1 / 9,

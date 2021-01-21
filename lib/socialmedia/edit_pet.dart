@@ -19,7 +19,6 @@ class Editpet extends StatefulWidget {
   Editpet({this.currentPet, this.userProfileId, this.currentGender});
   static const lst = ['Male', 'Female'];
 
-  static List dropdownlist = ['Cat', 'Dog'];
   @override
   _EditpetState createState() => _EditpetState();
 }

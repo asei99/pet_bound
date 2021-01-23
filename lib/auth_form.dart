@@ -224,7 +224,7 @@ class _AuthFormState extends State<AuthForm> {
                                   validator: (value) {
                                     if (value.isEmpty) {
                                       return 'Password is empty';
-                                    } else if (value.length < 5) {
+                                    } else if (value.length < 6) {
                                       return 'Password must more than 5 word';
                                     }
                                     return null;
@@ -266,6 +266,8 @@ class _AuthFormState extends State<AuthForm> {
                                         return 'password is empty';
                                       } else if (value != passwordText.text) {
                                         return 'password didnt match';
+                                      } else if (value.length < 6) {
+                                        return 'Password must more than 5 word';
                                       }
                                       return null;
                                     },

@@ -149,7 +149,7 @@ class _PostState extends State<Post> {
             children: <Widget>[
               CircleAvatar(
                 radius: 20.0,
-                backgroundImage: NetworkImage(url),
+                backgroundImage: NetworkImage(user.image),
               ),
               SizedBox(
                 width: 15,

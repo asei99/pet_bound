@@ -259,10 +259,6 @@ class _CreatepetsState extends State<Createpets> {
   }
 
   controlUploadAndSave() async {
-    setState(() {
-      uploading = true;
-    });
-
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
     if (file == null) {
@@ -272,6 +268,9 @@ class _CreatepetsState extends State<Createpets> {
       );
       return _scaffoldKey.currentState.showSnackBar(snackbar);
     }
+    // setState(() {
+    //   uploading = true;
+    // });
 
     if (isValid) {
       DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
@@ -281,6 +280,7 @@ class _CreatepetsState extends State<Createpets> {
       categories = Categories.fromDocument(documentSnapshot);
 
       setState(() {
+        uploading = true;
         categoryname = categories.category;
         categoryurl = categories.categoryurl;
       });

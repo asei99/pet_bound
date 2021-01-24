@@ -1,4 +1,4 @@
-import 'package:Pet_Bound/socialmedia/home_page%20copy.dart';
+import 'package:Pet_Bound/socialmedia/home_page.dart';
 import 'package:Pet_Bound/socialmedia/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -108,6 +108,7 @@ class _SearchscreenState extends State<Searchscreen>
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextFormField(
+                      autofocus: true,
                       controller: searchTextEditingController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(

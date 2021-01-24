@@ -79,8 +79,8 @@ class _CreatepetsState extends State<Createpets> {
           return const Center(
             child: CircularProgressIndicator(),
           );
-        var length = snapshot.data.docs.length;
-        DocumentSnapshot ds = snapshot.data.docs[length - 1];
+        // var length = snapshot.data.docs.length;
+        // DocumentSnapshot ds = snapshot.data.docs[length - 1];
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,

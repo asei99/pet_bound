@@ -86,7 +86,6 @@ class _PetsState extends State<Pets> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 GestureDetector(
-                  onDoubleTap: () => getAllPet(),
                   child: Container(
                     padding: EdgeInsets.only(left: 20, top: 15),
                     child: ownProfile
@@ -160,10 +159,15 @@ class _PetsState extends State<Pets> {
         backgroundColor: Colors.white,
         centerTitle: true,
         toolbarHeight: MediaQuery.of(context).size.height * 1 / 14,
-        title: Text(
-          'Pets',
-          style:
-              TextStyle(fontFamily: 'acme', fontSize: 25, color: Colors.black),
+        title: GestureDetector(
+          onDoubleTap: () => getAllPet(),
+          child: Container(
+            child: Text(
+              'Pets',
+              style: TextStyle(
+                  fontFamily: 'acme', fontSize: 25, color: Colors.black),
+            ),
+          ),
         ),
         actions: <Widget>[
           ownProfile

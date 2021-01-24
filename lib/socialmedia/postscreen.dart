@@ -1,5 +1,5 @@
 import 'package:Pet_Bound/Widget/post_profile_widget.dart';
-import 'package:Pet_Bound/Widget/post_widget.dart';
+
 import 'package:Pet_Bound/socialmedia/home_page.dart';
 import 'package:flutter/material.dart';
 

@@ -118,47 +118,59 @@ class _EventState extends State<Event> {
         backgroundColor: Colors.white,
         centerTitle: true,
         toolbarHeight: size.height * 1 / 14,
-        title: Text(
-          'Events',
-          style:
-              TextStyle(fontFamily: 'acme', fontSize: 25, color: Colors.black),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(237, 171, 172, 0.3),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(50),
-              topRight: Radius.circular(50),
+        title: GestureDetector(
+          onDoubleTap: () => getAllContestPosts(),
+          child: Container(
+            child: Text(
+              'Events',
+              style: TextStyle(
+                  fontFamily: 'acme', fontSize: 25, color: Colors.black),
             ),
           ),
-          child: Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+      ),
+      body: loading == true
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(child: CircularProgressIndicator()),
+              ],
+            )
+          : SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(237, 171, 172, 0.3),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(50),
+                    topRight: Radius.circular(50),
+                  ),
+                ),
+                child: Column(
                   children: <Widget>[
-                    tabView(tabList[0], 0),
-                    // SizedBox(width: 80,)
-                    tabView(tabList[1], 1),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          tabView(tabList[0], 0),
+                          // SizedBox(width: 80,)
+                          tabView(tabList[1], 1),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: selectedIndex == 0 ? contest() : place(),
+                    ),
                   ],
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                width: double.infinity,
-                child: selectedIndex == 0 ? contest() : place(),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

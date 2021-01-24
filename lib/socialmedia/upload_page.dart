@@ -26,6 +26,7 @@ class _UploadPageState extends State<UploadPage>
   firebase_storage.Reference storageReference =
       firebase_storage.FirebaseStorage.instance.ref().child('Posts Picture');
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _formKey = GlobalKey<FormState>();
 
   String postId = Uuid().v4();
   bool uploading = false;
@@ -54,28 +55,31 @@ class _UploadPageState extends State<UploadPage>
       );
       return _scaffoldKey.currentState.showSnackBar(snackbar);
     }
+    final isValid = _formKey.currentState.validate();
 
-    setState(() {
-      uploading = true;
-    });
-    await compressingPhoto();
-    String downloadUrl = await uploadPhoto(file);
+    if (isValid) {
+      setState(() {
+        uploading = true;
+      });
+      await compressingPhoto();
+      String downloadUrl = await uploadPhoto(file);
 
-    savePostInfoToFireStore(
-        url: downloadUrl, description: descriptionTextEditingController.text);
-    savePostInfoToTimelineFireStore(
-        url: downloadUrl, description: descriptionTextEditingController.text);
+      savePostInfoToFireStore(
+          url: downloadUrl, description: descriptionTextEditingController.text);
+      savePostInfoToTimelineFireStore(
+          url: downloadUrl, description: descriptionTextEditingController.text);
 
-    clearPostInfo();
+      clearPostInfo();
 
-    var snackbar = SnackBar(
-      content: Text(
-        "Success Upload Post",
-        style: TextStyle(color: Colors.black),
-      ),
-      backgroundColor: Colors.green,
-    );
-    return _scaffoldKey.currentState.showSnackBar(snackbar);
+      var snackbar = SnackBar(
+        content: Text(
+          "Success Upload Post",
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.green,
+      );
+      return _scaffoldKey.currentState.showSnackBar(snackbar);
+    }
   }
 
   savePostInfoToTimelineFireStore({String url, String description}) {
@@ -234,23 +238,30 @@ class _UploadPageState extends State<UploadPage>
           SizedBox(
             height: 10,
           ),
-          Container(
-            height: 100,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(5),
+          Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                  validator: (value) {
+                    if (value.length > 25) {
+                      return 'maximal characters is 25';
+                    }
+                    return null;
+                  },
+                  controller: descriptionTextEditingController,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 5,
+                    ),
+                    fillColor: Colors.grey,
+                  ),
+                ),
+              ],
             ),
-            child: TextField(
-              controller: descriptionTextEditingController,
-              // autofocus: true,
-              style: TextStyle(fontSize: 20),
-              decoration: InputDecoration.collapsed(
-                border: InputBorder.none,
-              ),
-              keyboardType: TextInputType.multiline,
-              maxLines: 5,
-            ),
-          )
+          ),
         ],
       ),
     );
@@ -297,10 +308,15 @@ class _UploadPageState extends State<UploadPage>
         backgroundColor: Colors.white,
         centerTitle: true,
         toolbarHeight: MediaQuery.of(context).size.height * 1 / 14,
-        title: Text(
-          'New Post',
-          style:
-              TextStyle(fontFamily: 'acme', fontSize: 25, color: Colors.black),
+        title: GestureDetector(
+          onDoubleTap: () => clearPostInfo(),
+          child: Container(
+            child: Text(
+              'New Post',
+              style: TextStyle(
+                  fontFamily: 'acme', fontSize: 25, color: Colors.black),
+            ),
+          ),
         ),
         actions: <Widget>[
           IconButton(
@@ -315,9 +331,11 @@ class _UploadPageState extends State<UploadPage>
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: file == null ? displayUploadImage() : displayUploadPost(),
-      ),
+      body: uploading
+          ? LinearProgressIndicator()
+          : SingleChildScrollView(
+              child: file == null ? displayUploadImage() : displayUploadPost(),
+            ),
     );
   }
 }

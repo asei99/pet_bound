@@ -1,7 +1,7 @@
 import 'package:Pet_Bound/Widget/pet_widget.dart';
 import 'package:Pet_Bound/socialmedia/edit_pet.dart';
 import 'package:Pet_Bound/socialmedia/home_page.dart';
-import 'package:Pet_Bound/socialmedia/pets.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
@@ -176,7 +176,7 @@ class _DetailpetState extends State<Detailpet> {
                               width: 170,
                               height: double.infinity,
                               decoration: BoxDecoration(
-                                color: Colors.grey,
+                                color: Color.fromRGBO(237, 171, 172, 80),
                                 borderRadius: BorderRadius.circular(40),
                               ),
                               child: Column(
@@ -202,7 +202,7 @@ class _DetailpetState extends State<Detailpet> {
                                 width: 170,
                                 height: double.infinity,
                                 decoration: BoxDecoration(
-                                  color: Colors.grey,
+                                  color: Color.fromRGBO(237, 171, 172, 80),
                                   borderRadius: BorderRadius.circular(40),
                                 ),
                                 child: Column(
@@ -227,7 +227,7 @@ class _DetailpetState extends State<Detailpet> {
                                 width: 170,
                                 height: double.infinity,
                                 decoration: BoxDecoration(
-                                  color: Colors.grey,
+                                  color: Color.fromRGBO(237, 171, 172, 80),
                                   borderRadius: BorderRadius.circular(40),
                                 ),
                                 child: Column(
@@ -252,7 +252,7 @@ class _DetailpetState extends State<Detailpet> {
                                 width: 170,
                                 height: double.infinity,
                                 decoration: BoxDecoration(
-                                  color: Colors.grey,
+                                  color: Color.fromRGBO(237, 171, 172, 80),
                                   borderRadius: BorderRadius.circular(40),
                                 ),
                                 child: Column(
@@ -277,7 +277,7 @@ class _DetailpetState extends State<Detailpet> {
                                 width: 170,
                                 height: double.infinity,
                                 decoration: BoxDecoration(
-                                  color: Colors.grey,
+                                  color: Color.fromRGBO(237, 171, 172, 80),
                                   borderRadius: BorderRadius.circular(40),
                                 ),
                                 child: Column(
@@ -307,7 +307,7 @@ class _DetailpetState extends State<Detailpet> {
                         padding: EdgeInsets.only(left: 10),
                         width: double.infinity,
                         height: size.height * 1 / 5.4,
-                        color: Colors.grey,
+                        color: Color.fromRGBO(237, 171, 172, 80),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[

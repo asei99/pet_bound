@@ -7,10 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
-void userprofile(BuildContext ctx) {
-  Navigator.of(ctx).pushReplacementNamed('/socialmedia/user_profile');
-}
-
 void searchscreen(BuildContext ctx) {
   Navigator.push(
     ctx,
@@ -29,17 +25,16 @@ class Newsfeed extends StatefulWidget {
 }
 
 class _NewsfeedState extends State<Newsfeed> {
+  bool loading = false;
   List<Post> posts;
   List<String> followingsList = [];
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  @override
-  void initState() {
-    retrieveTimeLine();
-    // retrieveFollowings();
-  }
+  Future retrieveTimeLine() async {
+    setState(() {
+      loading = true;
+    });
 
-  retrieveTimeLine() async {
     QuerySnapshot querySnapshot = await timelineRefrence
         .doc(widget.currentUser.id)
         .collection("timelinePosts")
@@ -51,35 +46,27 @@ class _NewsfeedState extends State<Newsfeed> {
         .toList();
 
     setState(() {
+      loading = false;
       this.posts = allPosts;
+      // createUserTimeLine();
     });
   }
 
-  // retrieveFollowings() async {
-  //   QuerySnapshot querySnapshot = await followingReference
-  //       .doc(currentUser.id)
-  //       .collection("userFollowing")
-  //       .get();
+  retrieveFollowings() async {
+    setState(() {
+      loading = true;
+    });
+    QuerySnapshot querySnapshot = await followingReference
+        .doc(currentUser.id)
+        .collection("userFollowing")
+        .get();
 
-  //   setState(() {
-  //     followingsList =
-  //         querySnapshot.docs.map((document) => document.id).toList();
-  //   });
-  // }
+    setState(() {
+      loading = false;
 
-  createUserTimeLine() {
-    if (posts == null) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(child: CircularProgressIndicator()),
-        ],
-      );
-    } else {
-      return ListView(
-        children: posts,
-      );
-    }
+      followingsList =
+          querySnapshot.docs.map((document) => document.id).toList();
+    });
   }
 
   displayNotification() {
@@ -92,6 +79,28 @@ class _NewsfeedState extends State<Newsfeed> {
   }
 
   @override
+  void initState() {
+    retrieveTimeLine();
+    retrieveFollowings();
+    super.initState();
+  }
+
+  createUserTimeLine() {
+    if (posts == null) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(child: Text('No post yet')),
+        ],
+      );
+    } else {
+      return ListView(
+        children: posts,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
@@ -99,18 +108,17 @@ class _NewsfeedState extends State<Newsfeed> {
         backgroundColor: Colors.white,
         centerTitle: true,
         toolbarHeight: MediaQuery.of(context).size.height * 1 / 14,
-        title: Text(
-          'Timeline',
-          style:
-              TextStyle(fontFamily: 'acme', fontSize: 25, color: Colors.black),
+        title: GestureDetector(
+          onDoubleTap: () => retrieveTimeLine(),
+          child: Container(
+            // color: Colors.blue,
+            child: Text(
+              "Timeline",
+              style: TextStyle(
+                  fontFamily: 'acme', fontSize: 25, color: Colors.black),
+            ),
+          ),
         ),
-        // leading: IconButton(
-        //   icon: Icon(
-        //     Entypo.camera,
-        //     color: Color.fromRGBO(237, 171, 172, 5),
-        //   ),
-        //   onPressed: () => {},
-        // ),
         actions: <Widget>[
           IconButton(
             padding: EdgeInsets.zero,
@@ -133,12 +141,28 @@ class _NewsfeedState extends State<Newsfeed> {
         ],
       ),
       // bottomNavigationBar: Navigationbar(),
-      body:
-          // Text(posts.toString())
-          RefreshIndicator(
-        child: createUserTimeLine(),
-        onRefresh: () => retrieveTimeLine(),
-      ),
+      body: loading == true
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(child: CircularProgressIndicator()),
+              ],
+            )
+          : posts == null
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(child: Text('No post yet')),
+                  ],
+                )
+              : ListView(
+                  children: posts,
+                ),
+      // Text(posts.toString())
+      //   RefreshIndicator(
+      // child: createUserTimeLine(),
+      // onRefresh: () => retrieveTimeLine(),
+      // ),
     );
   }
 }

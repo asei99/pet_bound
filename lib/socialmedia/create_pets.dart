@@ -303,7 +303,8 @@ class _CreatepetsState extends State<Createpets> {
           borndate: formatedDateTextEditingController.text,
           about: aboutTextEditingController.text,
           category: categoryname,
-          categoryurl: categoryurl);
+          categoryurl: categoryurl,
+          categoryid: category);
 
       clearPostInfo();
       Navigator.pop(context);
@@ -321,7 +322,8 @@ class _CreatepetsState extends State<Createpets> {
       String borndate,
       String about,
       String category,
-      String categoryurl}) {
+      String categoryurl,
+      String categoryid}) {
     petRefrence.doc(widget.currentUser).collection("usersPets").doc(petId).set({
       "petId": petId,
       "ownerId": widget.currentUser,
@@ -335,6 +337,7 @@ class _CreatepetsState extends State<Createpets> {
       "breed": breed,
       "about": about,
       "url": url,
+      "categoryid": categoryid,
     });
   }
 

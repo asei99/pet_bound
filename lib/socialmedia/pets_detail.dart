@@ -89,7 +89,7 @@ class _DetailpetState extends State<Detailpet> {
                   top: MediaQuery.of(context).size.height * 1 / 2.18,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.grey[200],
+                  color: Colors.white,
                   borderRadius: BorderRadiusDirectional.only(
                     topEnd: Radius.circular(60),
                   ),

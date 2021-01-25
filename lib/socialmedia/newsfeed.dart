@@ -32,6 +32,7 @@ class _NewsfeedState extends State<Newsfeed> {
 
   Future retrieveTimeLine() async {
     setState(() {
+      print("in");
       loading = true;
     });
 
@@ -47,6 +48,7 @@ class _NewsfeedState extends State<Newsfeed> {
 
     setState(() {
       loading = false;
+      print("exited");
       this.posts = allPosts;
       // createUserTimeLine();
     });
@@ -152,7 +154,7 @@ class _NewsfeedState extends State<Newsfeed> {
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(child: Text('No post yet')),
+                    Container(child: CircularProgressIndicator()),
                   ],
                 )
               : ListView(

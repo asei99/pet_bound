@@ -177,7 +177,7 @@ class _EventScreenPageState extends State<EventScreenPage> {
                     margin: EdgeInsets.only(top: 10),
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.grey,
+                      color: Color.fromRGBO(237, 171, 172, 80),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(50),
                         topRight: Radius.circular(50),
@@ -194,7 +194,7 @@ class _EventScreenPageState extends State<EventScreenPage> {
                               Text(
                                 contest.title,
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
+                                    fontWeight: FontWeight.bold, fontSize: 25),
                               ),
                               Spacer(),
                               IconButton(
@@ -237,13 +237,16 @@ class _EventScreenPageState extends State<EventScreenPage> {
                                   'About This Contest',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 17),
+                                      fontSize: 20),
                                 ),
                                 SizedBox(
                                   height: 5,
                                 ),
                                 Text(
                                   contest.description1,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                  ),
                                   // contest.likes.toString()
                                 ),
                               ],
@@ -257,16 +260,19 @@ class _EventScreenPageState extends State<EventScreenPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  'About This Contest',
+                                  'Location',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 17),
+                                      fontSize: 20),
                                 ),
                                 SizedBox(
                                   height: 5,
                                 ),
                                 Text(
                                   contest.description2,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                  ),
                                 ),
                               ],
                             ),

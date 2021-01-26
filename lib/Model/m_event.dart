@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Events {
   String id;
   String storeName;
+  String storeurl;
   String title;
   String url;
   String description1;
@@ -15,6 +16,7 @@ class Events {
     this.description1,
     this.description2,
     this.url,
+    this.storeurl,
   });
 
   factory Events.fromDocument(DocumentSnapshot doc) {
@@ -25,6 +27,7 @@ class Events {
       url: doc.data()['image'],
       description1: doc.data()['description1'],
       description2: doc.data()['description2'],
+      storeurl: doc.data()['storeurl'],
     );
   }
 }

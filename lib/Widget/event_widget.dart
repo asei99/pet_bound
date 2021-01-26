@@ -13,8 +13,10 @@ class Eventwidget extends StatefulWidget {
   final String description1;
   final String description2;
   final String url;
+  final String storeurl;
 
   Eventwidget({
+    this.storeurl,
     this.contestId,
     this.likes,
     this.category,
@@ -35,6 +37,7 @@ class Eventwidget extends StatefulWidget {
       description2: doc.data()["description2"],
       url: doc.data()["image"],
       category: doc.data()["category"],
+      storeurl: doc.data()["storeurl"],
     );
   }
   @override
@@ -47,6 +50,7 @@ class Eventwidget extends StatefulWidget {
         description2: this.description2,
         url: this.url,
         category: this.category,
+        storeurl: this.storeurl,
       );
 }
 
@@ -59,11 +63,13 @@ class _EventwidgetState extends State<Eventwidget> {
   final String description1;
   final String description2;
   final String url;
+  final String storeurl;
   bool isLiked;
   bool showHeart = false;
   final String currentOnlineUserId = currentUser?.id;
 
   _EventwidgetState({
+    this.storeurl,
     this.category,
     this.contestId,
     this.likes,
@@ -130,7 +136,7 @@ class _EventwidgetState extends State<Eventwidget> {
             children: <Widget>[
               CircleAvatar(
                 radius: 20.0,
-                backgroundImage: NetworkImage(url),
+                backgroundImage: NetworkImage(storeurl),
               ),
               SizedBox(
                 width: 15,

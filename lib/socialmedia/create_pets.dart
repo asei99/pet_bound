@@ -171,7 +171,7 @@ class _CreatepetsState extends State<Createpets> {
               ? Color.fromRGBO(237, 171, 172, 5)
               : Colors.grey,
         ),
-        width: 140,
+        width: 150,
         height: 40,
         child: Center(
           child: Text(
@@ -554,9 +554,7 @@ class _CreatepetsState extends State<Createpets> {
                                 Row(
                                   children: <Widget>[
                                     genderRadio(Createpets.lst[0], 0),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
+                                    Spacer(),
                                     genderRadio(Createpets.lst[1], 1),
                                   ],
                                 ),

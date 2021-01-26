@@ -52,11 +52,12 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   saveComment() {
+    FocusScope.of(context).unfocus();
     commentsReference.doc(postId).collection("comments").add({
       "username": currentUser.userName,
       "comment": commentTextEditingController.text,
       "timestamp": DateTime.now(),
-      "url": postImageUrl,
+      "url": currentUser.image,
       "userId": currentUser.id,
     });
     bool isNotPostOwner = postOwnerId != currentUser.id;
@@ -122,7 +123,8 @@ class _CommentPageState extends State<CommentPage> {
               child: Text(
                 "send",
                 style: TextStyle(
-                    color: Colors.lightGreenAccent,
+                    color: Color.fromRGBO(237, 171, 172, 5),
+                    fontSize: 20,
                     fontWeight: FontWeight.bold),
               ),
             ),
@@ -155,25 +157,29 @@ class Comment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 6),
-      child: Container(
-        color: Colors.grey,
-        child: Column(
-          children: <Widget>[
-            ListTile(
-              title: Text(
-                username + ":  " + comment,
-                style: TextStyle(fontSize: 18.0, color: Colors.black),
+      padding: EdgeInsets.only(bottom: 3),
+      child: Card(
+        elevation: 3,
+        child: Container(
+          color: Colors.grey[200],
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  username + ":  " + comment,
+                  style: TextStyle(fontSize: 18.0, color: Colors.black),
+                ),
+                leading: CircleAvatar(
+                  backgroundImage:
+                      CachedNetworkImageProvider(currentUser.image),
+                ),
+                subtitle: Text(
+                  tAgo.format(timestamp.toDate()),
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
-              leading: CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(currentUser.image),
-              ),
-              subtitle: Text(
-                tAgo.format(timestamp.toDate()),
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

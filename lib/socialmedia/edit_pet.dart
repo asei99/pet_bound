@@ -94,7 +94,7 @@ class _EditpetState extends State<Editpet> {
               ? Color.fromRGBO(237, 171, 172, 5)
               : Colors.grey,
         ),
-        width: 140,
+        width: 150,
         height: 40,
         child: Center(
           child: Text(
@@ -605,9 +605,7 @@ class _EditpetState extends State<Editpet> {
                     Row(
                       children: <Widget>[
                         genderRadio(Editpet.lst[0], 0),
-                        SizedBox(
-                          width: 10,
-                        ),
+                        Spacer(),
                         genderRadio(Editpet.lst[1], 1),
                       ],
                     ),

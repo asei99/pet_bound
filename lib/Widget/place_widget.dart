@@ -14,6 +14,7 @@ class Eventplacewidget extends StatefulWidget {
   final String description2;
   final String url;
   final dynamic category;
+  final String storeurl;
 
   Eventplacewidget({
     this.category,
@@ -24,6 +25,7 @@ class Eventplacewidget extends StatefulWidget {
     this.description1,
     this.description2,
     this.url,
+    this.storeurl,
   });
 
   factory Eventplacewidget.fromDocument(DocumentSnapshot doc) {
@@ -36,6 +38,7 @@ class Eventplacewidget extends StatefulWidget {
       description2: doc.data()["description2"],
       url: doc.data()["image"],
       category: doc.data()["category"],
+      storeurl: doc.data()["storeurl"],
     );
   }
   @override
@@ -48,6 +51,7 @@ class Eventplacewidget extends StatefulWidget {
         description2: this.description2,
         url: this.url,
         category: this.category,
+        storeurl: this.storeurl,
       );
 }
 
@@ -60,11 +64,13 @@ class _EventplacewidgetState extends State<Eventplacewidget> {
   final String description1;
   final String description2;
   final String url;
+  final String storeurl;
   bool isLiked;
   bool showHeart = false;
   final String currentOnlineUserId = currentUser?.id;
 
   _EventplacewidgetState({
+    this.storeurl,
     this.category,
     this.contestId,
     this.likes,
@@ -136,7 +142,7 @@ class _EventplacewidgetState extends State<Eventplacewidget> {
             children: <Widget>[
               CircleAvatar(
                 radius: 20.0,
-                backgroundImage: NetworkImage(url),
+                backgroundImage: NetworkImage(storeurl),
               ),
               SizedBox(
                 width: 15,

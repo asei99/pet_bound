@@ -320,7 +320,6 @@ class _AuthFormState extends State<AuthForm> {
                                 width: 280,
                                 decoration: BoxDecoration(
                                     color: Color.fromRGBO(237, 171, 172, 80),
-
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(12))),
                                 padding:
@@ -375,11 +374,13 @@ class _AuthFormState extends State<AuthForm> {
                             : Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Text(
-                                    'Dont’t have account? ',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontFamily: 'lato',
+                                  Container(
+                                    child: Text(
+                                      'Dont’t have account? ',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontFamily: 'lato',
+                                      ),
                                     ),
                                   ),
                                   GestureDetector(
@@ -389,12 +390,14 @@ class _AuthFormState extends State<AuthForm> {
                                         passwordText.clear();
                                       });
                                     },
-                                    child: Text(
-                                      'Create new account',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.blue,
-                                        fontFamily: 'lato',
+                                    child: Container(
+                                      child: Text(
+                                        'Create new account',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.blue,
+                                          fontFamily: 'lato',
+                                        ),
                                       ),
                                     ),
                                   )

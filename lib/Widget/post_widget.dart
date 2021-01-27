@@ -147,9 +147,13 @@ class _PostState extends State<Post> {
           padding: EdgeInsets.only(left: 10),
           child: Row(
             children: <Widget>[
-              CircleAvatar(
-                radius: 20.0,
-                backgroundImage: NetworkImage(user.image),
+              GestureDetector(
+                onTap: () =>
+                    displayUserProfile(context, userProfileId: user.id),
+                child: CircleAvatar(
+                  radius: 20.0,
+                  backgroundImage: NetworkImage(user.image),
+                ),
               ),
               SizedBox(
                 width: 15,

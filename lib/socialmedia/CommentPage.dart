@@ -17,6 +17,8 @@ class CommentPage extends StatefulWidget {
 }
 
 class _CommentPageState extends State<CommentPage> {
+  final _formKey = GlobalKey<FormState>();
+
   final String postId;
   final String postOwnerId;
   final String postImageUrl;
@@ -25,6 +27,7 @@ class _CommentPageState extends State<CommentPage> {
   _CommentPageState({this.postId, this.postOwnerId, this.postImageUrl});
 
   retrieveComment() {
+    print('tapped');
     return StreamBuilder(
       stream: commentsReference
           .doc(postId)
@@ -52,28 +55,33 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   saveComment() {
+    final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
-    commentsReference.doc(postId).collection("comments").add({
-      "username": currentUser.userName,
-      "comment": commentTextEditingController.text,
-      "timestamp": DateTime.now(),
-      "url": currentUser.image,
-      "userId": currentUser.id,
-    });
-    bool isNotPostOwner = postOwnerId != currentUser.id;
-    if (isNotPostOwner) {
-      activityFeedReference.doc(postOwnerId).collection("feedItems").add({
-        "type": "comment",
-        "commentData": commentTextEditingController.text,
-        "postId": postId,
-        "userId": currentUser.id,
+
+    if (isValid) {
+      commentsReference.doc(postId).collection("comments").add({
         "username": currentUser.userName,
-        "userProfileImg": currentUser.image,
-        "url": postImageUrl,
-        "timestamp": DateTime.now()
+        "comment": commentTextEditingController.text,
+        "timestamp": DateTime.now(),
+        "url": currentUser.image,
+        "userId": currentUser.id,
+        "userurlwhocomment": currentUser.image,
       });
+      bool isNotPostOwner = postOwnerId != currentUser.id;
+      if (isNotPostOwner) {
+        activityFeedReference.doc(postOwnerId).collection("feedItems").add({
+          "type": "comment",
+          "commentData": commentTextEditingController.text,
+          "postId": postId,
+          "userId": currentUser.id,
+          "username": currentUser.userName,
+          "userProfileImg": currentUser.image,
+          "url": postImageUrl,
+          "timestamp": DateTime.now()
+        });
+      }
+      commentTextEditingController.clear();
     }
-    commentTextEditingController.clear();
   }
 
   @override
@@ -83,10 +91,16 @@ class _CommentPageState extends State<CommentPage> {
         backgroundColor: Colors.white,
         centerTitle: true,
         toolbarHeight: MediaQuery.of(context).size.height * 1 / 14,
-        title: Text(
-          "Comment",
-          style:
-              TextStyle(fontFamily: 'acme', fontSize: 25, color: Colors.black),
+        title: GestureDetector(
+          onDoubleTap: () => retrieveComment(),
+          child: Container(
+            // color: Colors.blue,
+            child: Text(
+              "Comment",
+              style: TextStyle(
+                  fontFamily: 'acme', fontSize: 25, color: Colors.black),
+            ),
+          ),
         ),
         leading: IconButton(
           icon: Icon(
@@ -103,29 +117,38 @@ class _CommentPageState extends State<CommentPage> {
             child: retrieveComment(),
           ),
           Divider(),
-          ListTile(
-            title: TextFormField(
-              controller: commentTextEditingController,
-              decoration: InputDecoration(
-                labelText: "Write Comment Here",
-                labelStyle: TextStyle(color: Colors.black),
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
+          Form(
+            key: _formKey,
+            child: ListTile(
+              title: TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please input Comment';
+                  }
+                  return null;
+                },
+                controller: commentTextEditingController,
+                decoration: InputDecoration(
+                  labelText: "Write Comment Here",
+                  labelStyle: TextStyle(color: Colors.black),
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey)),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue),
+                  ),
                 ),
+                style: TextStyle(color: Colors.grey),
               ),
-              style: TextStyle(color: Colors.grey),
-            ),
-            trailing: OutlineButton(
-              onPressed: saveComment,
-              borderSide: BorderSide.none,
-              child: Text(
-                "send",
-                style: TextStyle(
-                    color: Color.fromRGBO(237, 171, 172, 5),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
+              trailing: OutlineButton(
+                onPressed: saveComment,
+                borderSide: BorderSide.none,
+                child: Text(
+                  "send",
+                  style: TextStyle(
+                      color: Color.fromRGBO(237, 171, 172, 5),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ),
@@ -141,8 +164,15 @@ class Comment extends StatelessWidget {
   final String url;
   final String comment;
   final Timestamp timestamp;
+  final String userurlwhocomment;
 
-  Comment({this.username, this.userId, this.url, this.comment, this.timestamp});
+  Comment(
+      {this.username,
+      this.userId,
+      this.url,
+      this.comment,
+      this.timestamp,
+      this.userurlwhocomment});
 
   factory Comment.fromDocument(DocumentSnapshot doc) {
     return Comment(
@@ -151,6 +181,7 @@ class Comment extends StatelessWidget {
       url: doc.data()["url"],
       comment: doc.data()["comment"],
       timestamp: doc.data()["timestamp"],
+      userurlwhocomment: doc.data()["userurlwhocomment"],
     );
   }
 
@@ -171,7 +202,7 @@ class Comment extends StatelessWidget {
                 ),
                 leading: CircleAvatar(
                   backgroundImage:
-                      CachedNetworkImageProvider(currentUser.image),
+                      CachedNetworkImageProvider(userurlwhocomment),
                 ),
                 subtitle: Text(
                   tAgo.format(timestamp.toDate()),

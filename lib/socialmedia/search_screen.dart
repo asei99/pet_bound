@@ -37,6 +37,7 @@ class _SearchscreenState extends State<Searchscreen>
           .where(
             'queryusername',
             isGreaterThanOrEqualTo: str.toLowerCase(),
+            // isEqualTo: str.toLowerCase()
           )
           .get();
       setState(() {

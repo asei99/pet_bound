@@ -147,6 +147,7 @@ class _AuthFormState extends State<AuthForm> {
                                     // style: TextStyle(color: Colors.pink),
                                     decoration: InputDecoration(
                                       fillColor: Colors.grey[300],
+
                                       filled: true,
                                       contentPadding:
                                           const EdgeInsets.symmetric(
@@ -318,7 +319,8 @@ class _AuthFormState extends State<AuthForm> {
                               child: Container(
                                 width: 280,
                                 decoration: BoxDecoration(
-                                    color: Colors.grey[300],
+                                    color: Color.fromRGBO(237, 171, 172, 80),
+
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(12))),
                                 padding:

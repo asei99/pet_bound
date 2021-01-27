@@ -361,9 +361,11 @@ class _EditprofileState extends State<Editprofile> {
               borderSide: BorderSide(color: Colors.grey),
             ),
             focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.white),
+              borderSide: BorderSide(color:                                      Color.fromRGBO(237, 171, 172, 80),
+              ),
             ),
-            hintStyle: TextStyle(color: Colors.grey),
+            hintStyle: TextStyle(color:                                      Color.fromRGBO(237, 171, 172, 80),
+            ),
             errorText: _profileNameValid ? null : "Profile name is very short",
           ),
         ),
@@ -391,7 +393,8 @@ class _EditprofileState extends State<Editprofile> {
               borderSide: BorderSide(color: Colors.grey),
             ),
             focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey),
+              borderSide: BorderSide(color:                                      Color.fromRGBO(237, 171, 172, 80),
+              ),
             ),
             hintStyle: TextStyle(color: Colors.grey),
             errorText: _bioValid ? null : "Bio is very Long.",

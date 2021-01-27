@@ -253,9 +253,17 @@ class _UploadPageState extends State<UploadPage>
                   },
                   controller: descriptionTextEditingController,
                   decoration: InputDecoration(
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color:                                      Color.fromRGBO(237, 171, 172, 80),
+                      ),
+                    ),
                     contentPadding: EdgeInsets.symmetric(
                       vertical: 5,
                     ),
+
                     fillColor: Colors.grey,
                   ),
                 ),

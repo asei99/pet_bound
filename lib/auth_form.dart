@@ -133,11 +133,11 @@ class _AuthFormState extends State<AuthForm> {
                             key: _formKey,
                             child: Column(
                               children: <Widget>[
-                                if (!isLogin)
+                                if (isLogin == false)
                                   TextFormField(
                                     validator: (value) {
                                       if (value.isEmpty) {
-                                        return 'username is empty';
+                                        return 'USERNAME NYA KOSONG BRO';
                                       } else if (value.length < 5) {
                                         return 'username must more than 5 word';
                                       }
@@ -147,14 +147,15 @@ class _AuthFormState extends State<AuthForm> {
                                     // style: TextStyle(color: Colors.pink),
                                     decoration: InputDecoration(
                                       fillColor: Colors.grey[300],
-
+                                      //warna isian nya
                                       filled: true,
+                                      //apakah mau di isi warna?
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               vertical: 10.0),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15),
                                         borderSide: BorderSide.none,
+                                        borderRadius: BorderRadius.circular(15),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(15),

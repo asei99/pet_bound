@@ -161,33 +161,6 @@ class _CreatepetsState extends State<Createpets> {
   String genderValue;
   bool imagePicked = false;
 
-  Widget genderRadio(String txt, int index) {
-    return InkWell(
-      onTap: () => changeIndex(index),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: selectedIndex == index
-              ? Color.fromRGBO(237, 171, 172, 5)
-              : Colors.grey,
-        ),
-        width: 150,
-        height: 40,
-        child: Center(
-          child: Text(
-            txt,
-            style: TextStyle(
-              fontFamily: 'acme',
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: selectedIndex == index ? Colors.white : Colors.black,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   void changeIndex(int index) {
     setState(() {
       selectedIndex = index;
@@ -391,6 +364,7 @@ class _CreatepetsState extends State<Createpets> {
   Widget build(BuildContext context) {
     DateTime selectedDate = DateTime.now();
     final DateFormat formatter = DateFormat('d MMM y');
+    Size size = MediaQuery.of(context).size;
 
     _selectDate(BuildContext context) async {
       final DateTime picked = await showDatePicker(
@@ -409,6 +383,33 @@ class _CreatepetsState extends State<Createpets> {
           formatedDateTextEditingController.value =
               TextEditingValue(text: formatter.format(picked));
         });
+    }
+
+    Widget genderRadio(String txt, int index) {
+      return InkWell(
+        onTap: () => changeIndex(index),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: selectedIndex == index
+                ? Color.fromRGBO(237, 171, 172, 5)
+                : Colors.grey,
+          ),
+          width: size.width * 1 / 2.5,
+          height: size.height * 1 / 16,
+          child: Center(
+            child: Text(
+              txt,
+              style: TextStyle(
+                fontFamily: 'acme',
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: selectedIndex == index ? Colors.white : Colors.black,
+              ),
+            ),
+          ),
+        ),
+      );
     }
 
     return Scaffold(

@@ -314,7 +314,9 @@ class _EventScreenPageState extends State<EventScreenPage> {
                                               backgroundImage: NetworkImage(
                                                 category[index],
                                               ),
-                                              backgroundColor: Colors.white,
+                                              // backgroundColor: Colors.white,
+                                              backgroundColor:
+                                                  Colors.transparent,
                                             ),
                                           ),
                                         );

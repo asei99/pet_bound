@@ -257,13 +257,13 @@ class _UploadPageState extends State<UploadPage>
                       borderSide: BorderSide(color: Colors.grey),
                     ),
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color:                                      Color.fromRGBO(237, 171, 172, 80),
+                      borderSide: BorderSide(
+                        color: Color.fromRGBO(237, 171, 172, 80),
                       ),
                     ),
                     contentPadding: EdgeInsets.symmetric(
                       vertical: 5,
                     ),
-
                     fillColor: Colors.grey,
                   ),
                 ),
@@ -300,6 +300,16 @@ class _UploadPageState extends State<UploadPage>
               ),
             ),
           ),
+          SizedBox(
+            height: 3,
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 4),
+            child: Text(
+              "* upload image is mandatory",
+              style: TextStyle(color: Colors.grey[700]),
+            ),
+          )
         ],
       ),
     );
